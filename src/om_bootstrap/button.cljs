@@ -5,9 +5,8 @@
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
             [om-tools.core :refer-macros [defcomponentk]]
-            [om-tools.dom :as d :include-macros true]
-            [om-tools.mixin :refer-macros [defmixin]]
-            [schema.core :as s])
+            [schema.core :as s]
+            [rum])
   (:require-macros [schema.macros :as sm]))
 
 ;; ## Basic Button
@@ -34,12 +33,12 @@
    children]
   (let [props {:href (-> opts :props (:href "#"))
                :class (u/class-set (assoc (:classes opts)
-                                     :disabled (:disabled? opts)))
+                                          :disabled (:disabled? opts)))
                :role "button"}]
-    (d/a (u/merge-props props (:props opts))
-         children)))
+    [:a (u/merge-props props (:props opts))
+     children]))
 
-(sm/defn button :- t/Component
+(sm/defn button* :- t/Component
   "Renders a button."
   [props :- Button & children]
   (let [[bs props] (t/separate Button props {:bs-class "button"
@@ -52,34 +51,44 @@
                        {:active (:active? bs)
                         :btn-block (:block? bs)})]
     (cond
-     (:nav-item? bs) (d/li {:class (u/class-set {:active (:active? bs)})}
-                           (render-anchor {:props props
-                                           :disabled? (:disabled? bs)
-                                           :classes klasses}
-                                          children))
-     (or (:href props)
-         (:nav-dropdown? bs))
-     (render-anchor {:props props
-                     :disabled? (:disabled? bs)
-                     :classes klasses}
-                    children)
-     :else (d/button (u/merge-props props {:class (u/class-set klasses)
+      (:nav-item? bs) [:li {:class (u/class-set {:active (:active? bs)})}
+                       (render-anchor {:props props
+                                       :disabled? (:disabled? bs)
+                                       :classes klasses}
+                                      children)]
+      (or (:href props)
+          (:nav-dropdown? bs))
+      (render-anchor {:props props
+                      :disabled? (:disabled? bs)
+                      :classes klasses}
+                     children)
+      :else [:button (u/merge-props props {:class (u/class-set klasses)
                                            :disabled (:disabled? bs)})
-                     children))))
+             children])))
+
+(rum/defc button
+  < rum/static
+  [& args]
+  (apply button* args))
 
 ;; ## Button Toolbar
 
-(sm/defn toolbar :- t/Component
+(sm/defn toolbar* :- t/Component
   "Renders a button toolbar."
   [opts & children]
   (let [[bs props] (t/separate {} opts {:bs-class "button-toolbar"})]
-    (d/div {:role "toolbar"
-            :class (u/class-set (t/bs-class-set bs))}
-           children)))
+    [:div {:role "toolbar"
+           :class (u/class-set (t/bs-class-set bs))}
+     children]))
+
+(rum/defc toolbar
+  < rum/static
+  [& args]
+  (apply toolbar* args))
 
 ;; ## Button Group
 
-(sm/defn button-group :- t/Component
+(sm/defn button-group* :- t/Component
   "Renders the supplied children in a wrapping button-group div."
   [opts :- ButtonGroup & children]
   (let [[bs props] (t/separate ButtonGroup opts {:bs-class "button-group"})
@@ -87,8 +96,13 @@
                        {:btn-group (not (:vertical? bs))
                         :btn-group-vertical (:vertical? bs)
                         :btn-group-justified (:justified? bs)})]
-    (d/div (u/merge-props props {:class (u/class-set classes)})
-           children)))
+    [:div (u/merge-props props {:class (u/class-set classes)})
+     children]))
+
+(rum/defc button-group
+  < rum/static
+  [& args]
+  (apply button-group* args))
 
 ;; ## Dropdown Button
 
@@ -106,8 +120,8 @@
   (let [classes {:dropdown true
                  :open open?
                  :dropup (:dropup? props)}]
-    (d/li {:class (u/class-set classes)}
-          children)))
+    [:li {:class (u/class-set classes)}
+     children]))
 
 (defn render-button-group [props open? children]
   (let [group-classes {:open open?
@@ -127,38 +141,34 @@
     (s/optional-key :title) s/Str
     (s/optional-key :on-select) (sm/=> s/Any s/Any)}))
 
-(defcomponentk menu-item*
-  "Generates an Om component of a menu item. Done this way so that
-  wrapping dropdowns will have access to the Om state."
-  [owner]
-  (render
-   [_]
-   (let [{:keys [opts children]} (om/get-props owner)
-         [bs props] (t/separate MenuItem opts {:href "#"})
-         classes {:dropdown-header (:header? bs)
-                  :divider (:divider? bs)}
-         handle-click (fn [e]
-                        (when-let [on-select (:on-select bs)]
-                          (.preventDefault e)
-                          (on-select (:key bs))))
-         children (if (:header? bs)
-                    children
-                    (d/a {:on-click handle-click
-                          :href (:href bs)
-                          :title (:title bs)
-                          :tab-index "-1"}
-                         children))
-         li-attrs (merge {:role "presentation"
-                          :class (u/class-set classes)}
-                         (when-let [k (:key bs)]
-                           {:key k}))]
-     (d/li (u/merge-props props li-attrs)
-           children))))
+(rum/defc menu-item*
+  < rum/static
+  [{:keys [opts children]}]
+  (let [[bs props] (t/separate MenuItem opts {:href "#"})
+        classes {:dropdown-header (:header? bs)
+                 :divider (:divider? bs)}
+        handle-click (fn [e]
+                       (when-let [on-select (:on-select bs)]
+                         (.preventDefault e)
+                         (on-select (:key bs))))
+        children (if (:header? bs)
+                   children
+                   [:a {:on-click handle-click
+                        :href (:href bs)
+                        :title (:title bs)
+                        :tab-index "-1"}
+                    children])
+        li-attrs (merge {:role "presentation"
+                         :class (u/class-set classes)}
+                        (when-let [k (:key bs)]
+                          {:key k}))]
+    [:li (u/merge-props props li-attrs)
+     children]))
 
 (sm/defn menu-item :- t/Component
   [opts :- MenuItem & children]
-  (->menu-item* {:opts opts
-                 :children children}))
+  (menu-item* {:opts opts
+               :children children}))
 
 (def DropdownMenu
   (t/bootstrap
@@ -172,63 +182,58 @@
                  :dropdown-menu-right (:pull-right? bs)}
         ul-attrs {:class (u/class-set classes)
                   :role "menu"}]
-    (d/ul (u/merge-props props ul-attrs)
-          (if-let [on-select (:on-select bs)]
-            (map #(u/clone-with-props % {:on-select on-select}) children)
-            children))))
+    [:ul (u/merge-props props ul-attrs)
+     (if-let [on-select (:on-select bs)]
+       (map #(u/clone-with-props % {:on-select on-select}) children)
+       children)]))
 
-(defcomponentk dropdown*
+(rum/defcs dropdown*
   "Generates a dropdown button component responsible for its own
   toggled state. The open? toggling is handled through a dropdown
   mixin."
-  [owner state]
-  (:mixins m/dropdown-mixin)
-  (render
-   [_]
-   (let [open? ((aget owner "isDropdownOpen"))
-         {:keys [opts children]} (om/get-props owner)
-         [bs props] (t/separate DropdownButton opts {:href "#"})
-         set-dropdown (aget owner "setDropdownState")
-         render-fn (partial (if (:nav-item? bs)
-                              render-nav-item
-                              render-button-group)
-                            bs open?)
-         button-props {:ref "dropdownButton"
-                       :class "dropdown-toggle"
-                       :key 0
-                       :nav-dropdown? (:nav-item? bs)
-                       :on-click (fn [e]
-                                   (.preventDefault e)
-                                   (set-dropdown (not open?)))}
-         update-child-props (fn [props]
-                              (let [handle
-                                    (when (or (:on-select (:opts props))
-                                              (:on-select bs))
-                                      (fn [key]
-                                        (if-let [os (:on-select bs)]
-                                          (os key)
-                                          (set-dropdown false))))]
-                                (update-in props [:opts]
-                                           u/merge-props
-                                           {:on-select handle})))]
-     (render-fn
-      [(button
-        (u/merge-props (dissoc opts :nav-item? :title :pull-right? :dropup?)
-                       button-props)
-        (:title bs) " " (d/span {:class "caret"}))
-       (dropdown-menu
-        {:ref "menu"
-         :aria-labelledby (:id props)
-         :pull-right? (:pull-right? bs)
-         :key 1}
-        (map #(u/clone-with-props % update-child-props) children))]))))
+  < rum/static m/dropdown-mixin
+  [{:keys [open?] :as state} {:keys [opts children]}]
+  (let [[bs props] (t/separate DropdownButton opts {:href "#"})
+        render-fn (partial (if (:nav-item? bs)
+                             render-nav-item
+                             render-button-group)
+                           bs open?)
+        button-props {:ref "dropdownButton"
+                      :class "dropdown-toggle"
+                      :key 0
+                      :nav-dropdown? (:nav-item? bs)
+                      :on-click (fn [e]
+                                  (.preventDefault e)
+                                  (m/set-dropdown-state state (not open?)))}
+        update-child-props (fn [props]
+                             (let [handle
+                                   (when (or (:on-select (:opts props))
+                                             (:on-select bs))
+                                     (fn [key]
+                                       (if-let [os (:on-select bs)]
+                                         (os key)
+                                         (m/set-dropdown-state state false))))]
+                               (update-in props [:opts]
+                                          u/merge-props
+                                          {:on-select handle})))]
+    (render-fn
+     [(button
+       (u/merge-props (dissoc opts :nav-item? :title :pull-right? :dropup?)
+                      button-props)
+       (:title bs) " " [:span {:class "caret"}])
+      (dropdown-menu
+       {:ref "menu"
+        :aria-labelledby (:id props)
+        :pull-right? (:pull-right? bs)
+        :key 1}
+       (map #(u/clone-with-props % update-child-props) children))])))
 
 (sm/defn dropdown :- t/Component
   "Returns a dropdown button component. The component manages its own
   dropdown state."
   [opts :- DropdownButton & children]
-  (->dropdown* {:opts opts
-                :children children}))
+  (dropdown* {:opts opts
+              :children children}))
 
 ;; ## Split Button
 
@@ -243,52 +248,47 @@
     (s/optional-key :on-click) (sm/=> s/Any s/Any)
     (s/optional-key :on-select) (sm/=> s/Any s/Any)}))
 
-(defcomponentk split*
+(rum/defcs split*
   "Generates a split button component responsible for its own
   toggled state. The open? toggling is handled through a dropdown
   mixin."
-  [owner state]
-  (:mixins m/dropdown-mixin)
-  (render
-   [_]
-   (let [open? ((aget owner "isDropdownOpen"))
-         {:keys [opts children]} (om/get-props owner)
-         [bs props] (t/separate SplitButton opts
-                                {:dropdown-title "Toggle dropdown"})
-         set-dropdown (aget owner "setDropdownState")
-         btn-props (partial u/merge-props (dissoc opts :title :id))
-         btn (button (btn-props
-                      {:ref "button"
-                       :on-click (fn [e]
-                                   (when open?
-                                     (set-dropdown false))
-                                   (when-let [f (:on-click bs)]
-                                     (f e)))})
-                     (:title bs))
-         drop-btn (button (btn-props
-                           {:ref "dropdownButton"
-                            :class "dropdown-toggle"
-                            :on-click (fn [e]
-                                        (.preventDefault e)
-                                        (set-dropdown (not open?)))})
-                          (d/span {:class "sr-only"} (:dropdown-title bs))
-                          (d/span {:class "caret"}))
-         menu (dropdown-menu {:ref "menu"
-                              :aria-labelledby (:id props)
-                              :pull-right? (:pull-right? bs)
-                              :on-select (fn [k]
-                                           (when-let [f (:on-select bs)]
-                                             (f k))
-                                           (set-dropdown false))}
-                             children)]
-     (button-group {:bs-size (:bs-size bs)
-                    :id (:id props)
-                    :class (u/class-set
-                            {:open open?
-                             :dropup (:dropup? bs)})}
-                   btn drop-btn menu))))
+  < rum/static m/dropdown-mixin
+  [{:keys [open?] :as state} {:keys [opts children]}]
+  (let [[bs props] (t/separate SplitButton opts
+                               {:dropdown-title "Toggle dropdown"})
+        btn-props (partial u/merge-props (dissoc opts :title :id))
+        btn (button (btn-props
+                     {:ref "button"
+                      :on-click (fn [e]
+                                  (when open?
+                                    (m/set-dropdown-state state false))
+                                  (when-let [f (:on-click bs)]
+                                    (f e)))})
+                    (:title bs))
+        drop-btn (button (btn-props
+                          {:ref "dropdownButton"
+                           :class "dropdown-toggle"
+                           :on-click (fn [e]
+                                       (.preventDefault e)
+                                       (m/set-dropdown-state state (not open?)))})
+                         [:span {:class "sr-only"} (:dropdown-title bs)]
+                         [:span {:class "caret"}])
+        menu (dropdown-menu {:ref "menu"
+                             :aria-labelledby (:id props)
+                             :pull-right? (:pull-right? bs)
+                             :on-select (fn [k]
+                                          (when-let [f (:on-select bs)]
+                                            (f k))
+                                          (m/set-dropdown-state state false))}
+                            children)]
+    (button-group {:bs-size (:bs-size bs)
+                   :id (:id props)
+                   :class (u/class-set
+                           {:open open?
+                            :dropup (:dropup? bs)})}
+                  btn drop-btn menu)))
 
 (sm/defn split
   [opts :- SplitButton & children]
-  (->split* {:opts opts
-             :children children}))
+  (split* {:opts opts
+           :children children}))

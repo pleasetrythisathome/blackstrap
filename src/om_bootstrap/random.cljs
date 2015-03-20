@@ -94,7 +94,7 @@
   "Renders the alert component with timeout mixed in. TODO: This
    should probably use the component macro and be defined inline under
    the alert function. No need for a separate name."
-  < m/set-timeout-mixin
+  < rum/static m/set-timeout-mixin
   {:did-mount (fn [state]
                 (let [bs (:bs (first (:rum/args state)))]
                   (if (and (:on-dismiss bs) (:dismiss-after bs))
