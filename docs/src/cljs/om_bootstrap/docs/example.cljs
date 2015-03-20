@@ -1,48 +1,50 @@
 (ns om-bootstrap.docs.example
   (:require [om.core :as om :include-macros true]
             [om-bootstrap.util :as u]
-            [om-tools.core :refer-macros [defcomponentk]]
-            [om-tools.dom :as d :include-macros true]))
+            [rum]))
 
 (defn bs-example
-  ([item] (d/div {:class "bs-example"} item))
+  ([item] [:div {:class "bs-example"} item])
   ([props item]
-     (d/div (u/merge-props props {:class "bs-example"})
-            item)))
+   [:div (u/merge-props props {:class "bs-example"})
+    item]))
 
-(defcomponentk code-block
+(defn highlight-mixin [ref]
+  {:did-mount
+   (fn [state]
+     (let [block (.getDOMNode (:rum/react-component state) ref)]
+       (.highlightBlock js/hljs block))
+     state)})
+
+(rum/defc code-block
   "Generates a component"
-  [[:data code {language "clojure"}] owner]
-  (did-mount [_]
-             (let [block (om/get-node owner "highlight")]
-               (.highlightBlock js/hljs block)))
-  (will-unmount [_])
-  (render [_]
-          (let [code-opts (if language {:class language} {})]
-            (d/div
-             {:class "highlight solarized-light-wrapper"}
-             (d/pre {:ref "highlight"}
-                    (d/code code-opts code))))))
+  [{:keys [code language]
+    :or {language "clojure"}}]
+  (let [code-opts (if language {:class language} {})]
+    [:div
+     {:class "highlight solarized-light-wrapper"}
+     [:pre {:ref "highlight"}
+      [:code code-opts code]]]))
 
-(defcomponentk example
-  [[:data body code] state]
-  (init-state [_] {:open? false})
-  (render-state
-   [_ {:keys [open?]}]
-   (d/div {:class "playground"}
-          (bs-example body)
-          (when open?
-            (->code-block {:code code}))
-          (d/a {:href "#"
-                :class (d/class-set
-                        {:code-toggle true
-                         :open open?})
-                :on-click (fn [e]
-                            (swap! state update-in [:open?] not)
-                            (.preventDefault e))}
-               (if open?
-                 "hide code"
-                 "show code")))))
+(rum/defcs example
+  < rum/static (rum/local {:open? false})
+  [state {:keys [body code]}]
+  (let [local (:rum/local state)
+        {:keys [open?]} @local]
+    [:div {:class "playground"}
+     (bs-example body)
+     (when open?
+       (code-block {:code code}))
+     [:a {:href "#"
+          :class (u/class-set
+                  {:code-toggle true
+                   :open open?})
+          :on-click (fn [e]
+                      (swap! local update :open? not)
+                      (.preventDefault e))}
+      (if open?
+        "hide code"
+        "show code")]]))
 
 (defn TODO []
-  (->example {:code "TODO" :body (d/p "TODO")}))
+  (example {:code "TODO" :body [:p "TODO"]}))

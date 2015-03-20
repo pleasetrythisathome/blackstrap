@@ -1,6 +1,6 @@
 (ns om-bootstrap.docs.getting-started
   "Code for the getting started page."
-  (:require [om-bootstrap.docs.example :refer [->code-block]]
+  (:require [om-bootstrap.docs.example :refer [code-block]]
             [om-bootstrap.docs.shared :refer [page-header]]
             [om-tools.dom :as d :include-macros true]))
 
@@ -28,7 +28,7 @@
                         " installed to build your Clojurescript project. Your " (d/code "project.clj")
                         " should include Clojure, ClojureScript, Om-Bootstrap and a supported version of "
                         (d/a {:href "https://github.com/swannodette/om"} "Om") ":")
-                   (->code-block {:code "(defproject foo \"0.1.0\"
+                   (code-block {:code "(defproject foo \"0.1.0\"
   ...
   :dependencies [[org.clojure/clojure \"1.6.0\"]
                  [org.clojure/clojurescript \"0.0-2760\"]
@@ -41,7 +41,7 @@
                    (d/p "For local development your "
                         (d/a {:href "http://github.com/emezeske/lein-cljsbuild"} "lein-cljsbuild")
                         "  settings should look something like this:")
-                   (->code-block {:code ":cljsbuild {
+                   (code-block {:code ":cljsbuild {
   :builds [{:id \"dev\"
             :source-paths [\"src\"]
             :compiler {
@@ -50,7 +50,7 @@
               :optimizations :none
               :source-map true}}]}"})
                    (d/p "Your local development markup should look like the following:")
-                   (->code-block {:code "<html>
+                   (code-block {:code "<html>
   <head>
     <link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css\"
           rel=\"stylesheet\"/>
@@ -69,7 +69,7 @@
                    (d/p "For production, your "
                         (d/a {:href "http://github.com/emezeske/lein-cljsbuild"} "lein-cljsbuild")
                         "  settings should look like this:")
-                   (->code-block {:code ":cljsbuild {
+                   (code-block {:code ":cljsbuild {
   :builds [{:id \"release\"
             :source-paths [\"src\"]
             :compiler {
@@ -78,7 +78,7 @@
               :pretty-print false}}]}"})
                    (d/p "This will generate a single file called " (d/code "main.js") "."
                         "Your production markup should look something like this:")
-                   (->code-block {:code "<html>
+                   (code-block {:code "<html>
   <head>
     <link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css\"
           rel=\"stylesheet\"/>

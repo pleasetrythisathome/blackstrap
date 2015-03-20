@@ -1,7 +1,7 @@
 (ns om-bootstrap.docs.components
   "All components for the om-bootstrap documentation project."
   (:require [om.core :as om :include-macros true]
-            [om-bootstrap.docs.example :refer [->example TODO]]
+            [om-bootstrap.docs.example :refer [example TODO]]
             [om-bootstrap.docs.shared :refer [page-header]]
             [om-bootstrap.button :as b]
             [om-bootstrap.grid :as g]
@@ -41,7 +41,7 @@
   [(d/h2 {:id "button-options"} "Options")
    (d/p "Use any of the available button style types to quickly create
    a styled button. Just modify the " (d/code ":bs-style") " prop.")
-   (->example (slurp-example "button/types"))
+   (example (slurp-example "button/types"))
    (warning
     "Button Spacing"
     (d/p "Because React doesn't output newlines between elements,
@@ -55,20 +55,20 @@
         (d/code ":bs-size large") ", "
         (d/code ":bs-size small") ", or "
         (d/code ":bs-size xsmall") " for additional sizes.")
-   (->example (slurp-example "button/sizes"))
+   (example (slurp-example "button/sizes"))
    (d/p "Create block level buttons — those that span the full width
    of a parent — by adding the " (d/code ":block? true") " prop.")
-   (->example (slurp-example "button/block"))])
+   (example (slurp-example "button/block"))])
 
 (defn button-states []
   [(d/h2 "Active state")
    (d/p "To set a button's active state, simply set the
    component's " (d/code ":active? true") " prop.")
-   (->example (slurp-example "button/active"))
+   (example (slurp-example "button/active"))
    (d/h2 "Disabled state")
    (d/p "Make buttons look unclickable by fading them back 50%. To do
    this, add the " (d/code ":disabled? true") "attribute to buttons.")
-   (->example (slurp-example "button/disabled"))
+   (example (slurp-example "button/disabled"))
    (warning
     "Event handler functionality not impacted"
     (d/p "This option will only change the button's appearance, not
@@ -84,30 +84,30 @@
    (d/h3 "Basic example")
    (d/p "Wrap a series of " (d/code "b/button")
         "s together in a " (d/code "b/button-group") ".")
-   (->example (slurp-example "button/group_basic"))
+   (example (slurp-example "button/group_basic"))
    (d/h3 "Button toolbar")
    (d/p "Combine sets of " (d/code "b/button-group")
         "s into a " (d/code "b/toolbar") " for more complex components.")
-   (->example (slurp-example "button/toolbar_basic"))
+   (example (slurp-example "button/toolbar_basic"))
    (d/h3 "Sizing")
    (d/p "Instead of applying button sizing props to every button in a group, add the "
         (d/code ":bs-size") " prop to the "
         (d/code "b/button-group")
         ".")
-   (->example (slurp-example "button/group_sizes"))
+   (example (slurp-example "button/group_sizes"))
 
    (d/h3 "Nesting")
    (d/p "You can place other button types within the "
         (d/code "b/button-group") ", like "
         (d/code "b/dropdown") "s.")
-   (->example (slurp-example "button/group_nested"))
+   (example (slurp-example "button/group_nested"))
 
    (d/h3 "Vertical variation")
    (d/p "Make a set of buttons appear vertically stacked rather than
    horizontally. " (d/strong {:class "text-danger"} "Split button
    dropdowns are not supported here."))
    (d/p "Just add " (d/code ":vertical? true") "  to the " (d/code "b/button-group"))
-   (->example (slurp-example "button/group_vertical"))
+   (example (slurp-example "button/group_vertical"))
 
    (d/h3 "Justified button groups")
    (d/p "Make a group of buttons stretch at equal sizes to span the
@@ -122,7 +122,7 @@
          " for more specifics."))
    (d/p "Just add " (d/code ":justified? true") " to
    the " (d/code "b/button-group") ".")
-   (->example (slurp-example "button/group_justified"))))
+   (example (slurp-example "button/group_justified"))))
 
 (defn button-dropdowns []
   (section
@@ -134,54 +134,55 @@
 
    (d/h3 "Single button dropdowns")
    (d/p "Create a dropdown button with the " (d/code "b/dropdown") " component.")
-   (->example (slurp-example "button/dropdown_basic"))
+   (example (slurp-example "button/dropdown_basic"))
 
    (d/h3 "Split button dropdowns")
    (d/p "Similarly, create split button dropdowns with
    the " (d/code "b/split") " component.")
-   (->example (slurp-example "button/split_basic"))
+   (example (slurp-example "button/split_basic"))
 
    (d/h3 "Sizing")
    (d/p "Button dropdowns work with buttons of all sizes.")
-   (->example (slurp-example "button/dropdown_sizes"))
+   (example (slurp-example "button/dropdown_sizes"))
 
    (d/h3 "Dropup variation")
    (d/p "Trigger dropdown menus that site above the button by adding
    the " (d/code ":dropup? true") " option.")
-   (->example (slurp-example "button/split_dropup"))
+   (example (slurp-example "button/split_dropup"))
 
 
    (d/h3 "Dropdown right variation")
    (d/p "Trigger dropdown menus that align to the right of the button
    using the " (d/code ":pull-right? true") " option.")
-   (->example (slurp-example "button/split_right"))))
+   (example (slurp-example "button/split_right"))))
 
 (defn button-main []
   (section
    "buttons"
    ["Buttons " (d/small "button.cljs")]
    (button-options)
-   (button-sizing)
-   (button-states)
+   ;;(button-sizing)
+   ;;(button-states)
 
    (d/h2 "Button tags")
    (d/p "The DOM element tag is chosen automatically for you based on
    the options you supply. Passing " (d/code ":href") " will result in
    the button using a " (d/code "<a />") " element. Otherwise,
    a " (d/code "<button />") " element will be used.")
-   (->example (slurp-example "button/tag_types"))
+   (example (slurp-example "button/tag_types"))
 
    (d/h2 "Button loading state")
    (d/p "When activating an asynchronous action from a button it is a
    good UX pattern to give the user feedback as to the loading
    state. This can easily be done by updating your button's props from
    a state change like below.")
-   (->example (slurp-example "button/loading"))))
+   (example (slurp-example "button/loading"))))
 
 (defn button-block []
   [(button-main)
-   (button-groups)
-   (button-dropdowns)])
+   ;;(button-groups)
+   ;;(button-dropdowns)
+   ])
 
 ;; ## Panel
 
@@ -193,33 +194,33 @@
    (d/h3 "Basic example")
    (d/p "By default, all the " (d/code "p/panel") " does is apply some
    basic border and padding to contain some content.")
-   (->example (slurp-example "panel/basic"))
+   (example (slurp-example "panel/basic"))
 
    (d/h3 "Panel with heading")
    (d/p "Easily add a heading container to your panel with
    the " (d/code ":header") " option.")
-   (->example (slurp-example "panel/heading"))
+   (example (slurp-example "panel/heading"))
 
    (d/h3 "Panel with footer")
    (d/p "Pass buttons or secondary text with
    the" (d/code ":footer") "option. Note that panel footers do not
    inherit colors and borders when using contextual variations as they
    are not meant to be in the foreground.")
-   (->example (slurp-example "panel/footer"))
+   (example (slurp-example "panel/footer"))
 
    (d/h3 "Panel with list group")
    (d/p "Put full-width list-groups in your panel with the " (d/code ":list-group") "option.")
-   (->example (slurp-example "panel/list-group"))
+   (example (slurp-example "panel/list-group"))
 
    (d/h3 "Contextual alternatives")
    (d/p "Like other components, make a panel more meaningful to a
    particular context by adding a " (d/code ":bs-style") " prop.")
-   (->example (slurp-example "panel/contextual"))
+   (example (slurp-example "panel/contextual"))
 
    (d/h3 "Collapsible panels")
    (d/p "This panel is collapsed by default and can be extended by clicking
    on the title")
-   (->example (slurp-example "panel/collapsible"))
+   (example (slurp-example "panel/collapsible"))
 
    (d/h3 "Controlled PanelGroups")
    (d/p (d/code "p/panel-group") "s can be controlled by a parent
@@ -242,11 +243,11 @@
    (d/p "A rendered modal with header, body, and set of actions in the footer.")
    (d/p "The header is added automatically if you pass in
    a " (d/code ":title") " option.")
-   (->example (slurp-example "modal/static"))
+   (example (slurp-example "modal/static"))
 
    (d/h3 "Live Demo")
    (d/p "Build your own component to trigger a modal")
-   (->example (slurp-example "modal/live"))))
+   (example (slurp-example "modal/live"))))
 
 ;; ## Tooltips
 
@@ -256,7 +257,7 @@
    ["Tooltips " (d/small "random.cljs")]
    (d/h3 "Example tooltips")
    (d/p "Tooltip component.")
-   (->example (slurp-example "tooltip/basic"))
+   (example (slurp-example "tooltip/basic"))
 
    (d/p "Positioned tooltip component.")
    (TODO)
@@ -305,7 +306,7 @@
    ["Popovers " (d/small "random.cljs")]
    (d/h3 "Example popovers")
    (d/p "Popovers component.")
-   (->example (slurp-example "popover/basic"))
+   (example (slurp-example "popover/basic"))
 
    (d/p "Popovers component.")
    (TODO)
@@ -325,37 +326,37 @@
         action with simple yet flexible progress bars.")
    (d/h3 "Basic example")
    (d/p "Default progress bar.")
-   (->example (slurp-example "progressbar/basic"))
+   (example (slurp-example "progressbar/basic"))
 
    (d/h3 "With label")
    (d/p "Add a " (d/code ":label") " prop to show a visible
    percentage. For low percentages, consider adding
    a" (d/code ":min-width") " to ensure the label's text is fully
    visible.")
-   (->example (slurp-example "progressbar/label"))
+   (example (slurp-example "progressbar/label"))
 
    (d/h3 "Screenreader only label")
    (d/p "Add the " (d/code ":sr-only? true") " option to hide the
    label visually.")
-   (->example (slurp-example "progressbar/sr_only_label"))
+   (example (slurp-example "progressbar/sr_only_label"))
 
    (d/h3 "Contextual alternatives")
    (d/p "Progress bars use some of the same button and alert classes
    for consistent styles.")
-   (->example (slurp-example "progressbar/contextual"))
+   (example (slurp-example "progressbar/contextual"))
 
    (d/h3 "Striped")
    (d/p "Uses a gradient to create a striped effect. Not available in IE8.")
-   (->example (slurp-example "progressbar/striped"))
+   (example (slurp-example "progressbar/striped"))
 
    (d/h3 "Animated")
    (d/p "Add the " (d/code ":active? true") " option to animate the
    stripes right to left. Not available in IE9 and below.")
-   (->example (slurp-example "progressbar/active"))
+   (example (slurp-example "progressbar/active"))
 
    (d/h3 "Stacked")
    (d/p "Nest " (d/code "pb/progress-bar") "s to stack them.")
-   (->example (slurp-example "progressbar/stacked"))))
+   (example (slurp-example "progressbar/stacked"))))
 
 ;; ## Navs
 
@@ -365,10 +366,10 @@
    ["Navs " (d/small "nav.cljs")]
    (d/h3 "Example navs")
    (d/p "Navs come in two styles, pills:")
-   (->example (slurp-example "nav/pills"))
+   (example (slurp-example "nav/pills"))
 
    (d/p "And tabs:")
-   (->example (slurp-example "nav/tabs"))))
+   (example (slurp-example "nav/tabs"))))
 
 ;; ## Navbars
 
@@ -377,7 +378,7 @@
    "navbars"
    ["Navbars " (d/small "nav.cljs")]
    (d/h3 "Example navbars")
-   (->example (slurp-example "nav/bar_basic"))))
+   (example (slurp-example "nav/bar_basic"))))
 
 ;; ## Toggleable Tabs
 
@@ -414,16 +415,16 @@
     ["Pagination " (d/small "basic.cljs")]
     (d/p "Creates pages that can have " (d/code ":href") " or " (d/code ":on-click") " set to navigate between pages")
     (d/h3 "Basic Pagination")
-    (->example (slurp-example "pagination/basic"))
+    (example (slurp-example "pagination/basic"))
 
     (d/h3 "Pagination with previous and next")
-    (->example (slurp-example "pagination/navigation"))
+    (example (slurp-example "pagination/navigation"))
 
     (d/h3 "Pages can be disabled")
-    (->example (slurp-example "pagination/disabled"))
+    (example (slurp-example "pagination/disabled"))
 
     (d/h3 "Pages can be marked as active")
-    (->example (slurp-example "pagination/active"))))
+    (example (slurp-example "pagination/active"))))
 
 ;; ## Pager
 
@@ -457,7 +458,7 @@
    ["Alert messages " (d/small "random.cljs")]
    (d/h3 "Example alerts")
    (d/p "Basic alert styles.")
-   (->example (slurp-example "alert/basic"))
+   (example (slurp-example "alert/basic"))
 
    (d/p "For closeable alerts, just pass an " (d/code ":on-dismiss") "
    function.")
@@ -489,7 +490,7 @@
    "grids"
    ["Grids " (d/small "grid.cljs")]
    (d/h3 "Example grids")
-   (->example (slurp-example "grid"))))
+   (example (slurp-example "grid"))))
 
 ;; ## Labels
 
@@ -500,12 +501,12 @@
    (d/h3 "Example")
    (d/p "Create " (d/code "(r/label {} \"label\")") " to show
    highlight information.")
-   (->example (slurp-example "label/basic"))
+   (example (slurp-example "label/basic"))
 
    (d/h3 "Available variations")
    (d/p "Add any of the below mentioned modifier classes to change the
    appearance of a label.")
-   (->example (slurp-example "label/variations"))))
+   (example (slurp-example "label/variations"))))
 
 ;; ## Badges
 
@@ -516,7 +517,7 @@
    (d/p "Easily highlight new or unread items by adding
    a " (d/code "r/badge") " to links, Bootstrap navs, and more.")
    (d/h3 "Example")
-   (->example (slurp-example "badge"))
+   (example (slurp-example "badge"))
    (info-callout "Cross-browser compatibility"
                  "Unlike regular Bootstrap, badges self-collapse even
                  in Internet Explorer 8.")))
@@ -530,7 +531,7 @@
    (d/p "A lightweight, flexible component that can optionally extend
    the entire viewport to showcase key content on your site.")
    (d/h3 "Example")
-   (->example (slurp-example "jumbotron/basic"))))
+   (example (slurp-example "jumbotron/basic"))))
 
 ;; ## Page Header
 
@@ -543,7 +544,7 @@
    the " (d/code "h1") "’s default " (d/code "small") " small element,
    as well as most other components (with additional styles).")
    (d/h3 "Example")
-   (->example (slurp-example "page_header"))))
+   (example (slurp-example "page_header"))))
 
 ;; ## Well
 
@@ -553,11 +554,11 @@
    ["Wells " (d/small "random.cljs")]
    (d/p "Use the well as a simple effect on an element to give it an inset effect.")
    (d/h3 "Default Wells")
-   (->example (slurp-example "well/basic"))
+   (example (slurp-example "well/basic"))
 
    (d/h3 "Optional classes")
    (d/p "Control padding and rounded corners with two optional modifier classes.")
-   (->example (slurp-example "well/sizes"))))
+   (example (slurp-example "well/sizes"))))
 
 ;; ## Glyphicons
 
@@ -568,7 +569,7 @@
    (d/p "Use them in buttons, button groups for a toolbar, navigation,
    or prepended form inputs.")
    (d/h3 "Example")
-   (->example (slurp-example "glyphicon"))))
+   (example (slurp-example "glyphicon"))))
 
 ;; ## Tables
 
@@ -582,14 +583,14 @@
         (d/code ":bordered? true") ", "
         (d/code ":condensed? true") ", and "
         (d/code ":hover? true") " options to customize the table.")
-   (->example (slurp-example "table/basic"))
+   (example (slurp-example "table/basic"))
 
    (d/h3 "Responsive")
    (d/p "Add the " (d/code ":responsive? true") " option to make them
    scroll horizontally up to small devices (under 768px). When viewing
    on anything larger than 768px wide, you will not see any difference
    in these tables.")
-   (->example (slurp-example "table/responsive"))))
+   (example (slurp-example "table/responsive"))))
 
 ;; ## Input
 
@@ -603,19 +604,19 @@
         ", so you can access the internal input element with "
         (d/code "(om/get-node owner \"input\")")
         " as demonstrated in the snippet.")
-   (->example (slurp-example "input/validation"))
+   (example (slurp-example "input/validation"))
 
    (d/h3 "Types")
    (d/p "Supports "
         (d/code "select") ", "
         (d/code "textarea") ", "
         (d/code "static") " as well as the standard HTML input types.")
-   (->example (slurp-example "input/types"))
+   (example (slurp-example "input/types"))
 
    (d/h3 "Add-ons")
    (d/p "Use " (d/code ":addon-before") "
    and " (d/code ":addon-after") ". Does not support buttons.")
-   (->example (slurp-example "input/addons"))
+   (example (slurp-example "input/addons"))
 
    (d/h3 "Validation")
    (d/p "Set " (d/code ":bs-style") " to one of "
@@ -625,7 +626,7 @@
         (d/code ":has-feedback? true")
         " to show a glyphicon. Glyphicon may need additional styling
         if there is an add-on or no label.")
-   (->example (slurp-example "input/feedback"))
+   (example (slurp-example "input/feedback"))
 
    (d/h3 "Horizontal forms")
    (d/p "Use"
@@ -634,12 +635,12 @@
         (d/code ":wrapper-classname")
         (d/p " options to add col classes manually. Checkbox and radio
         types need special treatment because label wraps input."))
-   (->example (slurp-example "input/horizontal"))
+   (example (slurp-example "input/horizontal"))
 
    (d/h3 "Use as a wrapper")
    (d/p "If " (d/code ":type") " is not set, child element(s) will be
    rendered instead of an input element.")
-   (->example (slurp-example "input/wrapper"))))
+   (example (slurp-example "input/wrapper"))))
 
 ;; ## Final Page Loading
 
@@ -693,26 +694,27 @@
      (d/div
       {:class "col-md-9" :role "main"}
       (lead)
-      (button-block)
-      (panel-block)
-      (modal-block)
-      (tooltip-block)
-      (popover-block)
-      (progress-bar-block)
-      (nav-block)
-      (navbar-block)
-      (tab-block)
-      (pagination-block)
-      (pager-block)
+      ;; (button-block)
+      ;; (panel-block)
+      ;; (modal-block)
+      ;; (tooltip-block)
+      ;; (popover-block)
+      ;; (progress-bar-block)
+      ;; (nav-block)
+      ;; (navbar-block)
+      ;; (tab-block)
+      ;; (pagination-block)
+      ;; (pager-block)
       (alert-block)
-      (carousel-block)
-      (grid-block)
-      (label-block)
-      (badge-block)
-      (jumbotron-block)
-      (header-block)
-      (well-block)
-      (glyphicon-block)
-      (table-block)
-      (input-block))
+      ;; (carousel-block)
+      ;; (grid-block)
+      ;; (label-block)
+      ;; (badge-block)
+      ;; (jumbotron-block)
+      ;; (header-block)
+      ;; (well-block)
+      ;; (glyphicon-block)
+      ;; (table-block)
+      ;; (input-block)
+      )
      (sidebar)))])
