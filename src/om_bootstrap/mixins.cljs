@@ -27,12 +27,14 @@
 (def set-listener-mixin
   "Handles a sequence of listeners for the component, and removes them
    from the document when the component is unmounted."
-  {:will-mount (fn [state] (set! (.-listeners (:rum/react-component state)) #js []))
-   :will-unmount (fn [state] (.. (:rum/react-component state) -listeners (map #(%))))})
+  {:will-mount (fn [state]
+                 (assoc state ::listeners (atom [])))
+   :will-unmount (fn [state]
+                   (update state ::listeners swap! (map #(%))))})
 
 (defn set-listener [state target event-type callback]
   (let [remove-fn (event-listener target event-type callback)]
-    (.push (.-listeners (:rum/react-component state)) remove-fn)))
+    (update state ::listeners swap! conj remove-fn)))
 
 ;; ## Timeout Mixin
 
@@ -59,52 +61,50 @@
 
 (def ESCAPE_KEY 27)
 
+(declare set-dropdown-state)
+
 (defn bind-root-close-handlers!
   "For dropdowns, binds a handler for that sets the dropdown-mixin's
   `:open?` state to false if the user clicks outside the owning
   component OR hits the escape key."
-  [owner]
-  (let [set-state (aget owner "setDropdownState")]
-    (set! (.-dropdownListeners owner)
-          (array
-           (event-listener
-            js/document "click"
-            (fn [e]
-              (when-not (in-root? (.-target e) (om/get-node owner))
-                (set-state false))))
-           (event-listener
-            js/document "keyup"
-            (fn [e]
-              (when (= ESCAPE_KEY (.-keyCode e))
-                (set-state false))))))))
+  [state]
+  (assoc state ::dropdown-listeners
+         (array
+          (event-listener
+           js/document "click"
+           (fn [e]
+             (when-not (in-root? (.-target e) (.getDOMNode (:rum/react-component state)))
+               (set-dropdown-state state false))))
+          (event-listener
+           js/document "keyup"
+           (fn [e]
+             (when (= ESCAPE_KEY (.-keyCode e))
+               (set-dropdown-state state false)))))))
 
 (defn unbind-root-close-handlers!
   "If they're present on the owning object, removes the listeners
   registered by the dropdown mixin."
-  [owner]
-  (when-let [listeners (.-dropdownListeners owner)]
-    (map #(%) listeners)
-    (set! (.-dropdownListeners owner) nil)))
+  [state]
+  (update state ::dropdown-listeners
+          (comp (constantly nil)
+                (partial map #(%)))))
 
-(defmixin dropdown-mixin
+(def dropdown-mixin
   "Mixin that manages a single piece of state - :open?. If a user
   clicks outside the component's owning dom element OR hits the escape
   key, the state will jump back to false.
 
   Down the road this may need to register a callback when the state
   changes."
-  (init-state [_] {:open? false})
-  (will-unmount [owner] (unbind-root-close-handlers! owner))
-  ;; This function exists because om-tools mixins can't share state
-  ;; with the component that uses them:
-  ;; https://github.com/Prismatic/om-tools/issues/28
-  (isDropdownOpen [owner] (om/get-state owner :open?))
-  (setDropdownState
-   [owner open?]
-   (if open?
-     (bind-root-close-handlers! owner)
-     (unbind-root-close-handlers! owner))
-   (om/set-state! owner [:open?] open?)))
+  {:init (fn [state props] (assoc state :open? (atom false)))
+   :will-unmount (fn [state] (unbind-root-close-handlers! state))})
+
+(defn set-dropdown-state
+  [state open?]
+  (if open?
+    (bind-root-close-handlers! state)
+    (unbind-root-close-handlers! state))
+  (update state :open? reset! open?))
 
 (defmixin collapsible-mixin
   "Mixin that enables collapsible Panels. Similar to the Dropdown
