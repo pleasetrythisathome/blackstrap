@@ -6,8 +6,10 @@
             [om-bootstrap.util :as u]
             [om-tools.core :refer-macros [defcomponentk]]
             [om-tools.dom :as d :include-macros true]
+            [rum]
             [schema.core :as s])
-  (:require-macros [schema.macros :as sm]))
+  (:require-macros [schema.macros :as sm]
+                   [om-bootstrap.rum :refer [defck]]))
 
 ;; ## Jumbotron
 
@@ -88,36 +90,37 @@
 (def alert-defaults
   {:bs-class "alert" :bs-style "info"})
 
-(defcomponentk alert*
+(rum/defc alert*
   "Renders the alert component with timeout mixed in. TODO: This
    should probably use the component macro and be defined inline under
    the alert function. No need for a separate name."
-  [[:data bs props children] owner]
-  (:mixins m/set-timeout-mixin)
-  (did-mount [_] (when (and (:on-dismiss bs) (:dismiss-after bs))
-                   (doto owner
-                     (.set-timeout (:on-dismiss bs)
-                                   (:dismiss-after bs)))))
-  (render
-   [_]
-   (let [classes (t/bs-class-set bs)
-         dismiss-button (when-let [od (:on-dismiss bs)]
-                          (d/button {:type "button"
-                                     :class "close"
-                                     :on-click od
-                                     :aria-hidden true}
-                                    "&times;"))]
-     (d/div (u/merge-props props {:class (u/class-set classes)})
-            dismiss-button
-            children))))
+  < m/set-timeout-mixin
+  {:did-mount (fn [state]
+                (let [bs (:bs (first (:rum/args state)))]
+                  (if (and (:on-dismiss bs) (:dismiss-after bs))
+                    (m/set-timeout state
+                                   (:on-dismiss bs)
+                                   (:dismiss-after bs))
+                    state)))}
+  [{:keys [bs props children]}]
+  (let [classes (t/bs-class-set bs)
+        dismiss-button (when-let [od (:on-dismiss bs)]
+                         (d/button {:type "button"
+                                    :class "close"
+                                    :on-click od
+                                    :aria-hidden true}
+                                   "&times;"))]
+    [:div (u/merge-props props {:class (u/class-set classes)})
+           dismiss-button
+           children]))
 
 (sm/defn alert :- t/Component
   "Wrapper for the alert component to allow a better user interface."
   [opts :- Alert & children]
   (let [[bs props] (t/separate Alert opts alert-defaults)]
-    (om/build alert* {:bs bs
-                      :props props
-                      :children children})))
+    (alert* {:bs bs
+             :props props
+             :children children})))
 
 ;; ## Popover
 

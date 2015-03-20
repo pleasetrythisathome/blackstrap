@@ -24,26 +24,27 @@
           (fn [] (.detachEvent target event-type callback)))
         :else (fn [])))
 
-(defmixin set-listener-mixin
+(def set-listener-mixin
   "Handles a sequence of listeners for the component, and removes them
    from the document when the component is unmounted."
-  (will-mount [owner] (set! (.-listeners owner) #js []))
-  (will-unmount [owner] (.. owner -listeners (map #(%))))
-  (set-listener [owner target event-type callback]
-                (let [remove-fn (event-listener target event-type callback)]
-                  (.push (.-listeners owner) remove-fn))))
+  {:will-mount (fn [state] (set! (.-listeners (:rum/react-component state)) #js []))
+   :will-unmount (fn [state] (.. (:rum/react-component state) -listeners (map #(%))))})
+
+(defn set-listener [state target event-type callback]
+  (let [remove-fn (event-listener target event-type callback)]
+    (.push (.-listeners (:rum/react-component state)) remove-fn)))
 
 ;; ## Timeout Mixin
 
-(defmixin set-timeout-mixin
+(def set-timeout-mixin
   "Handles a sequence of timeouts for the component, and removes them
    from the document when the component is unmounted."
-  (will-mount [owner] (set! (.-timeouts owner) #js []))
-  (will-unmount [owner]
-                (.. owner -timeouts (map #(js/clearTimeout %))))
-  (set-timeout [owner f timeout]
-               (let [timeout (js/setTimeout f timeout)]
-                 (.push (.-timeouts owner) timeout))))
+  {:will-mount (fn [state] (assoc state ::timeouts (atom [])))
+   :will-unmount (fn [state] (update state ::timeouts swap! (partial map #(js/clearTimeout %))))})
+
+(defn set-timeout [state f timeout]
+  (let [timeout (js/setTimeout f timeout)]
+    (update state ::timeouts swap! conj timeout)))
 
 ;; ## Dropdown Mixin
 
