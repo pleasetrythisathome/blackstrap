@@ -7,7 +7,7 @@
     [http-kit "2.1.18"]
     [hiccup "1.0.5"]])
 
-(defproject racehub/om-bootstrap "0.4.3-SNAPSHOT"
+(defproject pleasetrythisathome/blackstrap "0.4.3-SNAPSHOT"
   :description "Bootstrap meets Om."
   :url "http://github.com/racehub/om-bootstrap"
   :license {:name "MIT License"
@@ -23,7 +23,8 @@
                  [prismatic/om-tools "0.3.10" :exclusions [om]]
                  [prismatic/schema "0.3.1"
                   :exclusions [org.clojure/clojurescript]]
-                 [org.omcljs/om "0.8.8" :scope "provided"]]
+                 [org.omcljs/om "0.8.8" :scope "provided"]
+                 [rum "0.2.6" :scope "provided" :excluse [cljsjs/react]]]
   :profiles {:provided
              {:dependencies [[org.clojure/clojurescript "0.0-2760"]
                              [secretary "1.2.0"]
