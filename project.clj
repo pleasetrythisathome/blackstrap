@@ -26,7 +26,7 @@
                  [org.omcljs/om "0.8.8" :scope "provided"]
                  [rum "0.2.6" :scope "provided" :excluse [cljsjs/react]]]
   :profiles {:provided
-             {:dependencies [[org.clojure/clojurescript "0.0-2760"]
+             {:dependencies [[org.clojure/clojurescript "0.0-3126"]
                              [secretary "1.2.0"]
                              [weasel "0.5.0"]]}
              ;; Change to the first version of the uberjar profile
@@ -82,7 +82,7 @@
      :compiler {:output-to "dev/public/assets/main.js"
                 :output-dir "dev/public/generated"
                 :optimizations :none
-                :source-maps true}}
+                :source-map true}}
     :heroku
     {:source-paths ["src" "docs/src/cljs" "docs/src/clj"]
      :compiler {:output-to "dev/public/assets/generated/om_bootstrap.js"
