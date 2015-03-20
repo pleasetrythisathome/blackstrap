@@ -58,18 +58,6 @@
 
 ;; ### Utilities
 
-(sm/defn class-set :- s/Str
-  "Mimics the class-set behavior from React. Pass in a map of
-  potential class to Boolean; you'll get back a class string that
-  represents the final class to apply.
-
-  TODO: Use class-set from om-tools."
-  [klasses :- {(s/either s/Str s/Keyword) s/Bool}]
-  (->> (mapcat (fn [[k keep?]]
-                 (when keep? [(name k)]))
-               klasses)
-       (string/join " ")))
-
 (sm/defn glyph :- t/Component
   "To be used with :addon-before or :addon-after."
   [glyph-name :- s/Str]
@@ -83,7 +71,7 @@
                    :glyphicon-ok (= "success" bs-style)
                    :glyphicon-warning-sign (= "warning" bs-style)
                    :glyphicon-remove (= "error" bs-style)}]
-      (d/span {:class (class-set klasses)}))))
+      (d/span {:class (u/class-set klasses)}))))
 
 (sm/defn render-help
   [help :- (s/maybe s/Str)]
@@ -116,7 +104,7 @@
    children]
   (let [klasses {:checkbox (= "checkbox" type)
                  :radio (= "radio" type)}]
-    (d/div {:class (class-set klasses)}
+    (d/div {:class (u/class-set klasses)}
            children)))
 
 (sm/defn render-label
@@ -127,7 +115,7 @@
      (let [classes (merge {:control-label (not (checkbox-or-radio? input))}
                           (when lc {lc (boolean lc)}))]
        (if label
-         (d/label {:class (class-set classes)}
+         (d/label {:class (u/class-set classes)}
                   child
                   label)
          child))))
@@ -149,7 +137,7 @@
                         :has-warning (= "warning" bs-style)
                         :has-error (= "error" bs-style)}
                        (when cn {cn (boolean cn)}))]
-    (d/div {:class (class-set classes)}
+    (d/div {:class (u/class-set classes)}
            children)))
 
 (sm/defn render-input :- t/Component

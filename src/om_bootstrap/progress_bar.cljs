@@ -50,7 +50,7 @@
                 :aria-value-now (:now bs)}
         style {:width (str (percentage (:min bs) (:now bs) (:max bs)) "%")}]
     (d/div (u/merge-props props
-                          {:class (d/class-set classes)}
+                          {:class (u/class-set classes)}
                           values
                           {:style style})
            (when-let [label (:label bs)]

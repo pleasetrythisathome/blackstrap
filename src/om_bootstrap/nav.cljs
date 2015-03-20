@@ -33,7 +33,7 @@
                           (when-not (:disabled? bs)
                             (f (:key props)
                                (:href bs)))))]
-     (d/li (u/merge-props props {:class (d/class-set classes)})
+     (d/li (u/merge-props props {:class (u/class-set classes)})
            (d/a {:href (:href bs)
                  :ref "anchor"
                  :title (:title bs)
@@ -94,7 +94,7 @@
                   :collapse (not (:expanded? bs))
                   :in (:expanded? bs)}
          ul-props {:ref "ul"
-                   :class (d/class-set
+                   :class (u/class-set
                            (merge (t/bs-class-set bs)
                                   {:nav-stacked (:stacked? bs)
                                    :nav-justified (:justified? bs)
@@ -104,7 +104,7 @@
      (if (and (:navbar? bs)
               (not (:collapsible? bs)))
        (d/ul (u/merge-props props ul-props) children)
-       (d/nav (u/merge-props props {:class (d/class-set classes)})
+       (d/nav (u/merge-props props {:class (u/class-set classes)})
               (d/ul ul-props children))))))
 
 (sm/defn nav :- t/Component
@@ -153,7 +153,7 @@
   "Returns true if any of the necessary properties are in place to
   render the navbar-header and toggle button."
   [bs]
-  (boolean 
+  (boolean
     (or (:brand bs)
         (:toggle-button bs)
         (:toggle-nav-key bs))))
@@ -200,7 +200,7 @@
                    :navbar-static-top (:static-top? bs)
                    :navbar-inverse (:inverse? bs))]
      ((:component-fn bs) (u/merge-props (merge bs props)
-                                        {:class (d/class-set classes)})
+                                        {:class (u/class-set classes)})
       (d/div {:class (if (:fluid props) "container-fluid" "container")}
              (when (render-header-and-toggle-btn? bs)
                (render-header owner bs))

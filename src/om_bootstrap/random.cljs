@@ -26,7 +26,7 @@
   (let [[bs props] (t/separate {} opts {:bs-class "label"
                                         :bs-style "default"})
         classes (t/bs-class-set bs)]
-    (d/span (u/merge-props props {:class (d/class-set classes)})
+    (d/span (u/merge-props props {:class (u/class-set classes)})
             children)))
 
 ;; ## Well
@@ -35,7 +35,7 @@
   "Use the well as a simple effect on an element to give it an inset effect."
   [opts & children]
   (let [[bs props] (t/separate {} opts {:bs-class "well"})
-        class (d/class-set (t/bs-class-set bs))]
+        class (u/class-set (t/bs-class-set bs))]
     (d/div (u/merge-props props {:class class})
            children)))
 
@@ -69,7 +69,7 @@
                  (:placement bs) true
                  :in (or (:position-left bs)
                          (:position-top bs))}]
-    (d/div {:class (d/class-set classes)
+    (d/div {:class (u/class-set classes)
             :style {:left (:position-left bs)
                     :top (:position-top bs)}}
            (d/div {:class "tooltip-arrow"
@@ -107,7 +107,7 @@
                                      :on-click od
                                      :aria-hidden true}
                                     "&times;"))]
-     (d/div (u/merge-props props {:class (d/class-set classes)})
+     (d/div (u/merge-props props {:class (u/class-set classes)})
             dismiss-button
             children))))
 
@@ -139,7 +139,7 @@
                  (:placement bs) true
                  :in (or (:position-left bs)
                          (:position-top bs))}]
-    (d/div {:class (d/class-set classes)
+    (d/div {:class (u/class-set classes)
             :style {:left (:position-left bs)
                     :top (:position-top bs)
                     :display "block"}}
@@ -162,7 +162,7 @@
   (let [[bs props] (t/separate Badge opts)
         classes {:pull-right (:pull-right? bs)
                  :badge (u/some-valid-component? children)}]
-    (d/span (u/merge-props props {:class (d/class-set classes)})
+    (d/span (u/merge-props props {:class (u/class-set classes)})
             children)))
 
 ;; ## Glyphicon
@@ -175,5 +175,5 @@
   (let [[bs props] (t/separate Glyphicon opts {:bs-class "glyphicon"})
         classes (assoc (t/bs-class-set bs)
                   (str "glyphicon-" (:glyph bs)) true)]
-    (d/span (u/merge-props props {:class (d/class-set classes)})
+    (d/span (u/merge-props props {:class (u/class-set classes)})
             children)))

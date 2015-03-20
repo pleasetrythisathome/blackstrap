@@ -18,7 +18,7 @@
   (let [[bs props] (t/separate Page opts {:href "#"})
         classes {:disabled (:disabled? bs)
                  :active (:active? bs)}]
-    (d/li (u/merge-props props {:class (d/class-set classes)})
+    (d/li (u/merge-props props {:class (u/class-set classes)})
           (d/a {:href (:href bs)
                 :on-click (:on-click bs)}
                children))))

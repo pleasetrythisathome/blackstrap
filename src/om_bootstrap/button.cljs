@@ -33,7 +33,7 @@
             :props {s/Any s/Any}}
    children]
   (let [props {:href (-> opts :props (:href "#"))
-               :class (d/class-set (assoc (:classes opts)
+               :class (u/class-set (assoc (:classes opts)
                                      :disabled (:disabled? opts)))
                :role "button"}]
     (d/a (u/merge-props props (:props opts))
@@ -52,7 +52,7 @@
                        {:active (:active? bs)
                         :btn-block (:block? bs)})]
     (cond
-     (:nav-item? bs) (d/li {:class (d/class-set {:active (:active? bs)})}
+     (:nav-item? bs) (d/li {:class (u/class-set {:active (:active? bs)})}
                            (render-anchor {:props props
                                            :disabled? (:disabled? bs)
                                            :classes klasses}
@@ -63,7 +63,7 @@
                      :disabled? (:disabled? bs)
                      :classes klasses}
                     children)
-     :else (d/button (u/merge-props props {:class (d/class-set klasses)
+     :else (d/button (u/merge-props props {:class (u/class-set klasses)
                                            :disabled (:disabled? bs)})
                      children))))
 
@@ -74,7 +74,7 @@
   [opts & children]
   (let [[bs props] (t/separate {} opts {:bs-class "button-toolbar"})]
     (d/div {:role "toolbar"
-            :class (d/class-set (t/bs-class-set bs))}
+            :class (u/class-set (t/bs-class-set bs))}
            children)))
 
 ;; ## Button Group
@@ -87,7 +87,7 @@
                        {:btn-group (not (:vertical? bs))
                         :btn-group-vertical (:vertical? bs)
                         :btn-group-justified (:justified? bs)})]
-    (d/div (u/merge-props props {:class (d/class-set classes)})
+    (d/div (u/merge-props props {:class (u/class-set classes)})
            children)))
 
 ;; ## Dropdown Button
@@ -106,14 +106,14 @@
   (let [classes {:dropdown true
                  :open open?
                  :dropup (:dropup? props)}]
-    (d/li {:class (d/class-set classes)}
+    (d/li {:class (u/class-set classes)}
           children)))
 
 (defn render-button-group [props open? children]
   (let [group-classes {:open open?
                        :dropup (:dropup? props)}]
     (button-group {:bs-size (:bs-size props)
-                   :class (d/class-set group-classes)}
+                   :class (u/class-set group-classes)}
                   children)))
 
 ;; ## Dropdown Button
@@ -149,7 +149,7 @@
                           :tab-index "-1"}
                          children))
          li-attrs (merge {:role "presentation"
-                          :class (d/class-set classes)}
+                          :class (u/class-set classes)}
                          (when-let [k (:key bs)]
                            {:key k}))]
      (d/li (u/merge-props props li-attrs)
@@ -170,7 +170,7 @@
   (let [[bs props] (t/separate DropdownMenu opts)
         classes {:dropdown-menu true
                  :dropdown-menu-right (:pull-right? bs)}
-        ul-attrs {:class (d/class-set classes)
+        ul-attrs {:class (u/class-set classes)
                   :role "menu"}]
     (d/ul (u/merge-props props ul-attrs)
           (if-let [on-select (:on-select bs)]
@@ -283,7 +283,7 @@
                              children)]
      (button-group {:bs-size (:bs-size bs)
                     :id (:id props)
-                    :class (d/class-set
+                    :class (u/class-set
                             {:open open?
                              :dropup (:dropup? bs)})}
                    btn drop-btn menu))))

@@ -175,3 +175,9 @@
            (and (map? extra-props)
                 (empty? extra-props)) (create-element child (.-props child))
            :else (clone-basic-react child extra-props))))
+
+(defn class-set [m]
+  "Returns a string of keys with truthy values joined together by spaces,
+   or returns nil when no truthy values."
+  (when-let [ks (->> m (filter val) keys (clojure.core/map name) distinct seq)]
+    (str/join " " ks)))

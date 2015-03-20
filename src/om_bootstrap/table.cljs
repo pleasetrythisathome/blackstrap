@@ -22,7 +22,7 @@
                  :table-bordered (:bordered? opts)
                  :table-condensed (:condensed? opts)
                  :table-hover (:hover? opts)}
-        props (u/merge-props props {:class (d/class-set klasses)})
+        props (u/merge-props props {:class (u/class-set klasses)})
         table (d/table props children)]
     (if (:responsive? opts)
       (d/div {:class "table-responsive"} table)

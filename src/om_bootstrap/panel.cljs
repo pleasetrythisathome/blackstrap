@@ -30,7 +30,7 @@
     (if (:collapsible? bs)
       (->collapsible-panel* {:opts     (dissoc opts :collapsible?)
                             :children children})
-      (d/div (u/merge-props props {:class (d/class-set classes)})
+      (d/div (u/merge-props props {:class (u/class-set classes)})
              (when-let [header (:header bs)]
                (d/div {:class "panel-heading"}
                       (u/clone-with-props header {:class "panel-title"})))

@@ -37,7 +37,7 @@
                    :fade true
                    :in (om/get-state owner [:visible?])}]
       (d/div (u/merge-props props
-                            {:class (d/class-set classes)})
+                            {:class (u/class-set classes)})
         (d/div {:class "modal-dialog"}
           (d/div {:class "modal-content"}
             (d/div {:class "modal-header"}

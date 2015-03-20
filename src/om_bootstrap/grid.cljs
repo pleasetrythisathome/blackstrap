@@ -50,6 +50,6 @@
                          (str "col-" (name k) "-" v))
                        (select-keys bs col-keys))
                   (zipmap (repeat true))
-                  (d/class-set))]
+                  (u/class-set))]
     (d/div (u/merge-props props {:class class})
            children)))
