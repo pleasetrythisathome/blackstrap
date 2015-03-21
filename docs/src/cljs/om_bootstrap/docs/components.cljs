@@ -89,12 +89,12 @@
    (d/p "Combine sets of " (d/code "b/button-group")
         "s into a " (d/code "b/toolbar") " for more complex components.")
    (example (slurp-example "button/toolbar_basic"))
-   ;; (d/h3 "Sizing")
-   ;; (d/p "Instead of applying button sizing props to every button in a group, add the "
-   ;;      (d/code ":bs-size") " prop to the "
-   ;;      (d/code "b/button-group")
-   ;;      ".")
-   ;; (example (slurp-example "button/group_sizes"))
+   (d/h3 "Sizing")
+   (d/p "Instead of applying button sizing props to every button in a group, add the "
+        (d/code ":bs-size") " prop to the "
+        (d/code "b/button-group")
+        ".")
+   (example (slurp-example "button/group_sizes"))
 
    ;; (d/h3 "Nesting")
    ;; (d/p "You can place other button types within the "
