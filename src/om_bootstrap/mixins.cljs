@@ -68,26 +68,26 @@
   `:open?` state to false if the user clicks outside the owning
   component OR hits the escape key."
   [state]
-  (assoc state ::dropdown-listeners
-         (array
-          (event-listener
-           js/document "click"
-           (fn [e]
-             (when-not (in-root? (.-target e) (.getDOMNode (:rum/react-component state)))
-               (set-dropdown-state state false))))
-          (event-listener
-           js/document "keyup"
-           (fn [e]
-             (when (= ESCAPE_KEY (.-keyCode e))
-               (set-dropdown-state state false)))))))
+  (update state ::dropdown-listeners reset!
+          [(event-listener
+            js/document "click"
+            (fn [e]
+              (when-not (in-root? (.-target e) (.getDOMNode (:rum/react-component state)))
+                (set-dropdown-state state false))))
+           (event-listener
+            js/document "keyup"
+            (fn [e]
+              (when (= ESCAPE_KEY (.-keyCode e))
+                (set-dropdown-state state false))))]))
 
 (defn unbind-root-close-handlers!
   "If they're present on the owning object, removes the listeners
   registered by the dropdown mixin."
   [state]
-  (update state ::dropdown-listeners
+  (print (::dropdown-listeners state))
+  (update state ::dropdown-listeners swap!
           (comp (constantly nil)
-                (partial map #(%)))))
+                (partial mapv #(%)))))
 
 (def dropdown-mixin
   "Mixin that manages a single piece of state - :open?. If a user
@@ -96,7 +96,9 @@
 
   Down the road this may need to register a callback when the state
   changes."
-  {:init (fn [state props] (assoc state :open? (atom false)))
+  {:init (fn [state props] (assoc state
+                                  :open? (atom false)
+                                  ::dropdown-listeners (atom [])))
    :will-unmount (fn [state] (unbind-root-close-handlers! state))})
 
 (defn set-dropdown-state
@@ -104,7 +106,8 @@
   (if open?
     (bind-root-close-handlers! state)
     (unbind-root-close-handlers! state))
-  (update state :open? reset! open?))
+  (update state :open? reset! open?)
+  (rum/request-render (:rum/react-component state)))
 
 (defmixin collapsible-mixin
   "Mixin that enables collapsible Panels. Similar to the Dropdown

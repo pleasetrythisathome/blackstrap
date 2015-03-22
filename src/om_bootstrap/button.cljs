@@ -4,7 +4,6 @@
             [om-bootstrap.mixins :as m]
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
-            [om-tools.core :refer-macros [defcomponentk]]
             [schema.core :as s]
             [rum])
   (:require-macros [schema.macros :as sm]))
@@ -126,7 +125,7 @@
 (defn render-button-group [props open? children]
   (let [group-classes {:open open?
                        :dropup (:dropup? props)}]
-    (button-group {:bs-size (:bs-size props)
+    (apply button-group {:bs-size (:bs-size props)
                    :class (u/class-set group-classes)}
                   children)))
 
@@ -197,14 +196,14 @@
         render-fn (partial (if (:nav-item? bs)
                              render-nav-item
                              render-button-group)
-                           bs open?)
+                           bs @open?)
         button-props {:ref "dropdownButton"
                       :class "dropdown-toggle"
                       :key 0
                       :nav-dropdown? (:nav-item? bs)
                       :on-click (fn [e]
                                   (.preventDefault e)
-                                  (m/set-dropdown-state state (not open?)))}
+                                  (m/set-dropdown-state state (not @open?)))}
         update-child-props (fn [props]
                              (let [handle
                                    (when (or (:on-select (:opts props))
@@ -221,12 +220,14 @@
        (u/merge-props (dissoc opts :nav-item? :title :pull-right? :dropup?)
                       button-props)
        (:title bs) " " [:span {:class "caret"}])
-      (dropdown-menu
+      (apply dropdown-menu
        {:ref "menu"
         :aria-labelledby (:id props)
         :pull-right? (:pull-right? bs)
         :key 1}
-       (map #(u/clone-with-props % update-child-props) children))])))
+       children
+       ;;(map #(u/clone-with-props % update-child-props) children)
+       )])))
 
 (sm/defn dropdown :- t/Component
   "Returns a dropdown button component. The component manages its own
@@ -260,7 +261,7 @@
         btn (button (btn-props
                      {:ref "button"
                       :on-click (fn [e]
-                                  (when open?
+                                  (when @open?
                                     (m/set-dropdown-state state false))
                                   (when-let [f (:on-click bs)]
                                     (f e)))})
@@ -270,7 +271,7 @@
                            :class "dropdown-toggle"
                            :on-click (fn [e]
                                        (.preventDefault e)
-                                       (m/set-dropdown-state state (not open?)))})
+                                       (m/set-dropdown-state state (not @open?)))})
                          [:span {:class "sr-only"} (:dropdown-title bs)]
                          [:span {:class "caret"}])
         menu (dropdown-menu {:ref "menu"
@@ -284,7 +285,7 @@
     (button-group {:bs-size (:bs-size bs)
                    :id (:id props)
                    :class (u/class-set
-                           {:open open?
+                           {:open @open?
                             :dropup (:dropup? bs)})}
                   btn drop-btn menu)))
 
