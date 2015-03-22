@@ -3,9 +3,8 @@
             [om-bootstrap.mixins :as m]
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
-            [om-tools.core :refer-macros [defcomponentk]]
-            [om-tools.dom :as d :include-macros true]
-            [schema.core :as s])
+            [schema.core :as s]
+            [rum])
   (:require-macros [schema.macros :as sm]))
 
 ;; TODO: Dropdown functionality is NOT there yet, so :on-select is
@@ -20,7 +19,7 @@
     (s/optional-key :collapsible?) s/Bool
     (s/optional-key :collapsed?) s/Bool}))
 
-(declare ->collapsible-panel*)
+(declare collapsible-panel*)
 
 (sm/defn panel :- t/Component
   [opts :- Panel & children]
@@ -28,36 +27,34 @@
                                            :bs-style "default"})
         classes (assoc (t/bs-class-set bs) :panel true)]
     (if (:collapsible? bs)
-      (->collapsible-panel* {:opts     (dissoc opts :collapsible?)
+      (collapsible-panel* {:opts     (dissoc opts :collapsible?)
                             :children children})
-      (d/div (u/merge-props props {:class (u/class-set classes)})
+      [:div (u/merge-props props {:class (u/class-set classes)})
              (when-let [header (:header bs)]
-               (d/div {:class "panel-heading"}
-                      (u/clone-with-props header {:class "panel-title"})))
+               [:div {:class "panel-heading"}
+                      (u/clone-with-props header {:class "panel-title"})])
              (when-not (= 0 (count (filter identity children)))
-               (d/div {:class (str "panel-body" (when (:collapsed? bs) " collapse"))
+               [:div {:class (str "panel-body" (when (:collapsed? bs) " collapse"))
                        :ref   "body"}
-                      children))
+                      children])
              (when-let [list-group (:list-group bs)]
                list-group)
              (when-let [footer (:footer bs)]
-               (d/div {:class "panel-footer"} footer))))))
+               [:div {:class "panel-footer"} footer])])))
 
 ;; ## Collapsible Panel
 
-(defcomponentk collapsible-panel*
+(rum/defcs collapsible-panel*
   "Generates a collapsible panel component resposible for its own toggled state.
    The :collapsed? state is handled through a collapsible mixin."
-  [owner state]
-  (:mixins m/collapsible-mixin)
-  (render [_]
-    (let [{:keys [opts children]} (om/get-props owner)
-          is-collapsed? ((aget owner "isPanelCollapsed") owner)
-          toggle! (fn [_] ((aget owner "toggleCollapsed") owner) false)
-          collapsible-header (d/h4
-                               (d/a {:href     "#"
-                                     :on-click toggle!}
-                                    (:header opts)))]
-      (panel (u/merge-props opts {:header collapsible-header
-                                  :collapsed? is-collapsed?})
-             children))))
+  < (rum/local {:collapsed? false})
+  [state {:keys [opts children]}]
+  (let [is-collapsed? (:collapsed? @(:rum/local state))
+        toggle! (fn [_] (swap! (:rum/local state) update :collapsed? not) false)
+        collapsible-header [:h4
+                            [:a {:href     "#"
+                                 :on-click toggle!}
+                             (:header opts)]]]
+    (panel (u/merge-props opts {:header collapsible-header
+                                :collapsed? is-collapsed?})
+           children)))
