@@ -225,9 +225,7 @@
         :aria-labelledby (:id props)
         :pull-right? (:pull-right? bs)
         :key 1}
-       children
-       ;;(map #(u/clone-with-props % update-child-props) children)
-       )])))
+       (map #(u/clone-with-props % update-child-props) children))])))
 
 (sm/defn dropdown :- t/Component
   "Returns a dropdown button component. The component manages its own

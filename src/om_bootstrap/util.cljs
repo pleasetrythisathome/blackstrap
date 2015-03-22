@@ -43,6 +43,13 @@
   [x]
   (boolean (get-props x)))
 
+(sm/defn get-state [x]
+  (aget (.-props x) ":rum/state"))
+
+(sm/defn rum-component? :- s/Bool
+  [x]
+  (boolean (get-state x)))
+
 (sm/defn strict-valid-component? :- s/Bool
   "TODO: Once Om updates its externs to include this file, we can
   remove the janky aget call."
@@ -124,7 +131,25 @@
 (defn create-element
   ([child] (create-element child nil))
   ([child props]
-     (.createElement js/React (.-type child) props)))
+   (.createElement js/React (.-type child) props)))
+
+(defn update-first-arg
+  [state f & args]
+  (update state :rum/args (fn [[a & r]]
+                            (cons (apply f a args) r))))
+
+(defn clone-rum
+  [child extra-props]
+  (let [rum-state (js->clj (get-state child))
+        props #js {}
+        cloned-child (gobject/clone child)]
+    (gobject/extend props
+      (.-props child)
+      #js {":rum/state" (if (fn? extra-props)
+                          (update-first-arg rum-state extra-props)
+                          (update-first-arg rum-state merge-props extra-props))})
+    (gobject/extend cloned-child #js {:props props})
+    cloned-child))
 
 (defn clone-om
   "Merges the supplied extra properties into the underlying Om cursor
@@ -169,13 +194,14 @@
   properties will be merged into the underlying cursor and accessible
   in the Om constructor."
   ([child]
-     (clone-with-props child {}))
+   (clone-with-props child {}))
   ([child extra-props]
-     (cond (not (strict-valid-component? child)) child
-           (om-component? child) (clone-om child extra-props)
-           (and (map? extra-props)
-                (empty? extra-props)) (create-element child (.-props child))
-           :else (clone-basic-react child extra-props))))
+   (cond (not (strict-valid-component? child)) child
+         (rum-component? child) (clone-rum child extra-props)
+         (om-component? child) (clone-om child extra-props)
+         (and (map? extra-props)
+              (empty? extra-props)) (create-element child (.-props child))
+              :else (clone-basic-react child extra-props))))
 
 (defn class-set [m]
   "Returns a string of keys with truthy values joined together by spaces,

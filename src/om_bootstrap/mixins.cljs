@@ -84,7 +84,6 @@
   "If they're present on the owning object, removes the listeners
   registered by the dropdown mixin."
   [state]
-  (print (::dropdown-listeners state))
   (update state ::dropdown-listeners swap!
           (comp (constantly nil)
                 (partial mapv #(%)))))
