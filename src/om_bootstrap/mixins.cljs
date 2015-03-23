@@ -1,6 +1,7 @@
 (ns om-bootstrap.mixins
   (:require [cljs.core.async :as a :refer [put!]]
-            [schema.core :as s])
+            [schema.core :as s]
+            [rum])
   (:require-macros [schema.macros :as sm]))
 
 ;; ## Listener Mixin
@@ -105,3 +106,21 @@
     (unbind-root-close-handlers! state))
   (update state :open? reset! open?)
   (rum/request-render (:rum/react-component state)))
+
+(defn default-local
+  ([accessor] (default-local accessor :rum/local))
+  ([accessor state-ref-key]
+   {:will-mount
+    (fn [state]
+      (reset! (get state state-ref-key) (accessor state))
+      state)}))
+
+(defn transfer-args
+  ([accessor] (transfer-args accessor :rum/local))
+  ([accessor state-ref-key]
+   {:transfer-state
+    (fn [old-state state]
+      (let [[last next] (mapv accessor [old-state state])]
+        (when (not= last next)
+          (reset! (get state state-ref-key) next)
+          state)))}))

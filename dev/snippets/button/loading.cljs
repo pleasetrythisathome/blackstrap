@@ -4,10 +4,10 @@
           [rum])
 
 (rum/defcs loading-button
-  < (rum/local {:loading? false}) m/set-timeout-mixin
+  < (rum/local false :loading?) m/set-timeout-mixin
   [state]
-  (let [{:keys [loading?]} @(:rum/local state)
-        toggle #(swap! (:rum/local state) update :loading? not)
+  (let [loading? @(:loading? state)
+        toggle #(swap! (:loading? state) not)
 
         ;; This is required to get around
         ;; https://github.com/Prismatic/om-tools/issues/29.
