@@ -1,6 +1,6 @@
 #_
 (:require [om-bootstrap.input :as i]
-          [om-tools.core :refer-macros [defcomponentk]])
+          [rum])
 
 (defn validation-state
   "Returns a Bootstrap :bs-style string based on the supplied string
@@ -12,25 +12,20 @@
           (pos? l) "error"
           :else nil)))
 
-(defn handle-change
-  "Grab the input element via the `input` reference."
-  [owner state]
-  (let [node (om/get-node owner "input")]
-    (swap! state assoc :text (.-value node))))
+(rum/defcs example-input
+  < (rum/local "" :text)
+  [state]
+  (i/input
+   {:feedback? true
+    :type "text"
+    :label "Working example with validation"
+    :placeholder "Enter text"
+    :help "Validates based on string length."
+    :group-classname "group-class"
+    :wrapper-classname "wrapper-class"
+    :label-classname "label-class"
+    :value @(:text state)
+    :bs-style (validation-state @(:text state))
+    :on-change #(reset! (:text state) (.. %  -target -value))}))
 
-(defcomponentk example-input [owner state]
-  (init-state [_] {:text ""})
-  (render [_]
-          (i/input
-           {:feedback? true
-            :type "text"
-            :label "Working example with validation"
-            :placeholder "Enter text"
-            :help "Validates based on string length."
-            :group-classname "group-class"
-            :wrapper-classname "wrapper-class"
-            :label-classname "label-class"
-            :bs-style (validation-state (:text @state))
-            :on-change #(handle-change owner state)})))
-
-(->example-input {})
+(example-input)

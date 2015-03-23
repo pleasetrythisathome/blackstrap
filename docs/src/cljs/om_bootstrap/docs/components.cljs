@@ -15,7 +15,8 @@
             [om-bootstrap.random :as r]
             [om-bootstrap.table :refer [table]]
             [om-tools.core :refer-macros [defcomponentk]]
-            [om-tools.dom :as d :include-macros true])
+            [om-tools.dom :as d :include-macros true]
+            [rum])
   (:require-macros [om-bootstrap.macros :refer [slurp-example]]))
 
 ;; ## Helpers
@@ -598,11 +599,7 @@
    "input"
    ["Input " (d/small "input.cljs")]
    (d/p "Renders an input in bootstrap wrappers. Supports label, help,
-   text input add-ons, validation and use as wrapper. om-bootstrap tags the "
-        (d/code "input") " node with a " (d/code ":ref") " and " (d/code ":key")
-        ", so you can access the internal input element with "
-        (d/code "(om/get-node owner \"input\")")
-        " as demonstrated in the snippet.")
+   text input add-ons, validation and use as wrapper.")
    (example (slurp-example "input/validation"))
 
    (d/h3 "Types")
@@ -694,25 +691,26 @@
       {:class "col-md-9" :role "main"}
       (lead)
       (button-block)
-      (panel-block)
-      (modal-block)
-      (tooltip-block)
-      (popover-block)
-      (progress-bar-block)
-      ;; (nav-block)
-      ;; (navbar-block)
-      (tab-block)
-      (pagination-block)
-      (pager-block)
-      (alert-block)
-      (carousel-block)
-      (grid-block)
-      (label-block)
-      (badge-block)
-      (jumbotron-block)
-      (header-block)
-      (well-block)
-      (glyphicon-block)
-      (table-block)
-      (input-block))
+      ;; (panel-block)
+      ;; (modal-block)
+      ;; (tooltip-block)
+      ;; (popover-block)
+      ;; (progress-bar-block)
+      ;; ;; (nav-block)
+      ;; ;; (navbar-block)
+      ;; (tab-block)
+      ;; (pagination-block)
+      ;; (pager-block)
+      ;; (alert-block)
+      ;; (carousel-block)
+      ;; (grid-block)
+      ;; (label-block)
+      ;; (badge-block)
+      ;; (jumbotron-block)
+      ;; (header-block)
+      ;; (well-block)
+      ;; (glyphicon-block)
+      ;; (table-block)
+      (input-block)
+      )
      (sidebar)))])
