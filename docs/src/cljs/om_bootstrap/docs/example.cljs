@@ -1,6 +1,5 @@
 (ns om-bootstrap.docs.example
-  (:require [om.core :as om :include-macros true]
-            [om-bootstrap.util :as u]
+  (:require [om-bootstrap.util :as u]
             [sablono.core :as html :refer-macros [html]]
             [rum]))
 
