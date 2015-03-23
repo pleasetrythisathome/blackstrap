@@ -1,8 +1,7 @@
 #_
-(:require [om-bootstrap.button :as b]
-          [om-tools.dom :as d :include-macros true])
+(:require [om-bootstrap.button :as b])
 
-(d/div
+[:div
  (for [[size title] [["large" "Large button"]
                      ["small" "Small button"]
                      ["xsmall" "Extra small button"]]
@@ -14,4 +13,4 @@
                 (b/menu-item {:key 2} "Another action")
                 (b/menu-item {:key 3} "Something else here")
                 (b/menu-item {:divider? true})
-                (b/menu-item {:key 4} "Separated link")))))
+                (b/menu-item {:key 4} "Separated link"))))]

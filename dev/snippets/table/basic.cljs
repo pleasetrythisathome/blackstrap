@@ -1,26 +1,25 @@
 #_
-(:require [om-bootstrap.table :refer [table]]
-          [om-tools.dom :as d :include-macros true])
+(:require [om-bootstrap.table :refer [table]])
 
 (table {:striped? true :bordered? true :condensed? true :hover? true}
-       (d/thead
-        (d/tr
-         (d/th "#")
-         (d/th "First Name")
-         (d/th "Last Name")
-         (d/th "Username")))
-       (d/tbody
-        (d/tr
-         (d/td "1")
-         (d/td "Mark")
-         (d/td "Otto")
-         (d/td "@mdo"))
-        (d/tr
-         (d/td "2")
-         (d/td "Jacob")
-         (d/td "Thornton")
-         (d/td "@fat"))
-        (d/tr
-         (d/td "3")
-         (d/td {:col-span 2} "Larry the Bird")
-         (d/td "@twitter"))))
+       [:thead
+        [:tr
+         [:th "#"]
+         [:th "First Name"]
+         [:th "Last Name"]
+         [:th "Username"]]]
+       [:tbody
+        [:tr
+         [:td "1"]
+         [:td "Mark"]
+         [:td "Otto"]
+         [:td "@mdo"]]
+        [:tr
+         [:td "2"]
+         [:td "Jacob"]
+         [:td "Thornton"]
+         [:td "@fat"]]
+        [:tr
+         [:td "3"]
+         [:td {:col-span 2} "Larry the Bird"]
+         [:td "@twitter"]]])

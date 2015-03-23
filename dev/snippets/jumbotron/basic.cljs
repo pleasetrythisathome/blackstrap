@@ -1,11 +1,10 @@
 #_
 (:require [om-bootstrap.button :as b]
-          [om-bootstrap.random :as r]
-          [om-tools.dom :as d :include-macros true])
+          [om-bootstrap.random :as r])
 
 (r/jumbotron {}
-             (d/h1 "Hello, World!")
-             (d/p "This is a simple hero unit, a simple
+             [:h1 "Hello, World!"]
+             [:p "This is a simple hero unit, a simple
              jumbotron-style component for calling extra attention to
-             featured content or information.")
-             (d/p (b/button {:bs-style "primary"} "Learn More")))
+             featured content or information."]
+             [:p (b/button {:bs-style "primary"} "Learn More")])

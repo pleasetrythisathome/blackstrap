@@ -1,7 +1,7 @@
 #_
 (:require [om-bootstrap.modal :as md])
 
-(md/modal {:header (d/h4 "This is a Modal")
+(md/modal {:header [:h4 "This is a Modal"]
            :footer (b/button {} "Save")
            :close-button? true
            :visible? true}

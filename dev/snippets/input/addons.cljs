@@ -1,8 +1,7 @@
 #_
-(:require [om-bootstrap.input :as i]
-          [om-tools.dom :as d :include-macros true])
+(:require [om-bootstrap.input :as i])
 
-(d/form
+[:form
  (i/input {:type "text" :addon-before "@"})
  (i/input {:type "text" :addon-after ".00"})
- (i/input {:type "text" :addon-before "$" :addon-after ".00"}))
+ (i/input {:type "text" :addon-before "$" :addon-after ".00"})]

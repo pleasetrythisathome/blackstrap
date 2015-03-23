@@ -2,7 +2,7 @@
 (:require [om-bootstrap.button :as b]
           [om-bootstrap.random :as r])
 
-(d/div
+[:div
  (b/toolbar
   {}
   (b/button-group
@@ -18,4 +18,4 @@
    (b/button {:bs-size "large"} (r/glyphicon {:glyph "star"}) " Star")
    (b/button {} (r/glyphicon {:glyph "star"}) " Star")
    (b/button {:bs-size "small"} (r/glyphicon {:glyph "star"}) " Star")
-   (b/button {:bs-size "xsmall"} (r/glyphicon {:glyph "star"}) " Star"))))
+   (b/button {:bs-size "xsmall"} (r/glyphicon {:glyph "star"}) " Star")))]

@@ -1,5 +1,6 @@
 #_
-(:require [om-bootstrap.modal :as md])
+(:require [om-bootstrap.modal :as md]
+          [rum])
 
 (defn trigger [app-state owner]
   (reify

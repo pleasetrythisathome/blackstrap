@@ -1,8 +1,7 @@
 #_
-(:require [om-bootstrap.button :as b]
-          [om-tools.dom :as d :include-macros true])
+(:require [om-bootstrap.button :as b])
 
-(d/div
+[:div
  (b/toolbar {}
             (b/button {:bs-style "primary" :bs-size "large"} "Large button")
             (b/button {:bs-size "large"} "Large button"))
@@ -14,4 +13,4 @@
             (b/button {:bs-size "small"} "Small button"))
  (b/toolbar {}
             (b/button {:bs-style "primary" :bs-size "xsmall"} "Extra small button")
-            (b/button {:bs-size "xsmall"} "Extra small button")))
+            (b/button {:bs-size "xsmall"} "Extra small button"))]

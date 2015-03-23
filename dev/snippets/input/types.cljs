@@ -1,8 +1,7 @@
 #_
-(:require [om-bootstrap.input :as i]
-          [om-tools.dom :as d :include-macros true])
+(:require [om-bootstrap.input :as i])
 
-(d/form
+[:form
  (i/input {:type "text" :default-value "text"})
  (i/input {:type "password" :default-value "secret"})
  (i/input {:type "checkbox"
@@ -14,10 +13,10 @@
            :read-only true})
  (i/input {:type "radio" :label "radio" :checked true :read-only true})
  (i/input {:type "select" :default-value "select"}
-          (d/option {:value "select"} "select")
-          (d/option {:value "other"} "..."))
+          [:option {:value "select"} "select"]
+          [:option {:value "other"} "..."])
  (i/input {:type "select" :multiple true}
-          (d/option {:value "select"} "select")
-          (d/option {:value "other"} "..."))
+          [:option {:value "select"} "select"]
+          [:option {:value "other"} "..."])
  (i/input {:type "textarea" :default-value "textarea"})
- (i/input {:type "static" :value "Static Text"}))
+ (i/input {:type "static" :value "Static Text"})]
