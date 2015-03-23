@@ -3,7 +3,6 @@
             [om.core :as om]
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
-            [om-tools.dom :as d :include-macros true]
             [schema.core :as s])
   (:require-macros [schema.macros :as sm]))
 
@@ -61,7 +60,7 @@
 (sm/defn glyph :- t/Component
   "To be used with :addon-before or :addon-after."
   [glyph-name :- s/Str]
-  (d/span {:class (str "glyphicon glyphicon-" glyph-name)}))
+  [:span {:class (str "glyphicon glyphicon-" glyph-name)}])
 
 (sm/defn render-icon :- t/Component
   [{:keys [feedback? bs-style]} :- FeedbackIcons]
@@ -71,24 +70,24 @@
                    :glyphicon-ok (= "success" bs-style)
                    :glyphicon-warning-sign (= "warning" bs-style)
                    :glyphicon-remove (= "error" bs-style)}]
-      (d/span {:class (u/class-set klasses)}))))
+      [:span {:class (u/class-set klasses)}])))
 
 (sm/defn render-help
   [help :- (s/maybe s/Str)]
   (when help
-    (d/span {:class "help-block"} help)))
+    [:span {:class "help-block"} help]))
 
 (sm/defn render-input-group
   "Items is a vector of render instances."
   [{:keys [addon-before addon-after]} :- Addons
    items :- s/Any]
   (if (or addon-before addon-after)
-    (d/div {:class "input-group"}
+    [:div {:class "input-group"}
            (when addon-before
-             (d/span {:class "input-group-addon"} addon-before))
+             [:span {:class "input-group-addon"} addon-before])
            items
            (when addon-after
-             (d/span {:class "input-group-addon"} addon-after)))
+             [:span {:class "input-group-addon"} addon-after])]
     items))
 
 (sm/defn checkbox-or-radio? :- s/Bool
@@ -104,8 +103,8 @@
    children]
   (let [klasses {:checkbox (= "checkbox" type)
                  :radio (= "radio" type)}]
-    (d/div {:class (u/class-set klasses)}
-           children)))
+    [:div {:class (u/class-set klasses)}
+           children]))
 
 (sm/defn render-label
   "This doesn't handle any control group stuff."
@@ -115,16 +114,16 @@
      (let [classes (merge {:control-label (not (checkbox-or-radio? input))}
                           (when lc {lc (boolean lc)}))]
        (if label
-         (d/label {:class (u/class-set classes)}
+         [:label {:class (u/class-set classes)}
                   child
-                  label)
+                  label]
          child))))
 
 (sm/defn render-wrapper
   [{wc :wrapper-classname} :- Input
    child]
   (if wc
-    (d/div {:class wc} child)
+    [:div {:class wc} child]
     child))
 
 (sm/defn render-form-group :- t/Component
@@ -137,8 +136,8 @@
                         :has-warning (= "warning" bs-style)
                         :has-error (= "error" bs-style)}
                        (when cn {cn (boolean cn)}))]
-    (d/div {:class (u/class-set classes)}
-           children)))
+    [:div {:class (u/class-set classes)}
+           children]))
 
 (sm/defn render-input :- t/Component
   [input :- Input attrs children]
@@ -149,14 +148,14 @@
     (if-not (:type input)
       children
       (case (:type input)
-        "select" (d/select (props "form-control") children)
-        "textarea" (d/textarea (props "form-control"))
-        "static" (d/p (props "form-control-static") (:value attrs))
-        (d/input (assoc (props (if (checkbox-or-radio? input)
+        "select" [:select (props "form-control") children]
+        "textarea" [:textarea (props "form-control")]
+        "static" [:p (props "form-control-static") (:value attrs)]
+        [:input (assoc (props (if (checkbox-or-radio? input)
                                  ""
                                  "form-control"))
                    :type (:type input))
-                 children)))))
+                 children]))))
 
 ;; ### API Methods
 
@@ -195,10 +194,10 @@
                                            :key "input"
                                            :type "radio"})
         {:keys [label checked? inline?]} bs
-        core (d/input (assoc props :checked checked?))]
+        core [:input (assoc props :checked checked?)]]
     (if inline?
-      (d/label {:class "radio-inline"} core label)
-      (d/div {:class "radio"} (d/label {} core label)))))
+      [:label {:class "radio-inline"} core label]
+      [:div {:class "radio"} [:label {} core label]])))
 
 (sm/defn options :- [t/Component]
   "Returns a sequence of options for use as the children of a select
@@ -206,6 +205,6 @@
   [header :- s/Str
    opts :- [(s/pair s/Str "option value"
                     s/Str "option label")]]
-  (cons (d/option {:value ""} header)
+  (cons [:option {:value ""} header]
         (for [[v label] opts]
-          (d/option {:value v} label))))
+          [:option {:value v} label])))

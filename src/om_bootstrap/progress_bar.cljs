@@ -2,7 +2,6 @@
   "IN PROGRESS! (Yuk yuk.) This code is a start, but currently doesn't
   work."
   (:require [om-bootstrap.types :as t]
-            [om-tools.dom :as d :include-macros true]
             [om-bootstrap.util :as u]
             [schema.core :as s])
   (:require-macros [schema.macros :as sm]))
@@ -49,20 +48,20 @@
                 :aria-value-max (:max bs)
                 :aria-value-now (:now bs)}
         style {:width (str (percentage (:min bs) (:now bs) (:max bs)) "%")}]
-    (d/div (u/merge-props props
+    [:div (u/merge-props props
                           {:class (u/class-set classes)}
                           values
                           {:style style})
            (when-let [label (:label bs)]
              (if (:sr-only? bs)
-               (d/span {:class "sr-only"} label)
-               label)))))
+               [:span {:class "sr-only"} label]
+               label))]))
 
 (sm/defn progress-bar
   "Generates a progress bar component."
   [opts :- ProgressBar & children]
   (if (:nested? opts)
     (child-bar opts children)
-    (d/div {:class "progress"}
+    [:div {:class "progress"}
            (child-bar opts children)
-           children)))
+           children]))

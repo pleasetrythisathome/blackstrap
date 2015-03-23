@@ -2,7 +2,6 @@
   (:require [om.core :as om]
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
-            [om-tools.dom :as d :include-macros true]
             [schema.core :as s])
   (:require-macros [schema.macros :as sm]))
 
@@ -23,7 +22,7 @@
                  :table-condensed (:condensed? opts)
                  :table-hover (:hover? opts)}
         props (u/merge-props props {:class (u/class-set klasses)})
-        table (d/table props children)]
+        table [:table props children]]
     (if (:responsive? opts)
-      (d/div {:class "table-responsive"} table)
+      [:div {:class "table-responsive"} table]
       table)))

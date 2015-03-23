@@ -1,7 +1,5 @@
 (ns om-bootstrap.mixins
   (:require [cljs.core.async :as a :refer [put!]]
-            [om.core :as om]
-            [om-tools.mixin :refer-macros [defmixin]]
             [schema.core :as s])
   (:require-macros [schema.macros :as sm]))
 
