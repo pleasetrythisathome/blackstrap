@@ -36,7 +36,7 @@
     [:a (u/merge-props props (:props opts))
      children]))
 
-(sm/defn button* :- t/Component
+(sm/defn button :- t/Component
   "Renders a button."
   [props :- Button & children]
   (let [[bs props] (t/separate Button props {:bs-class "button"
@@ -64,14 +64,9 @@
                                            :disabled (:disabled? bs)})
              children])))
 
-(rum/defc button
-  < rum/static
-  [& args]
-  (apply button* args))
-
 ;; ## Button Toolbar
 
-(sm/defn toolbar* :- t/Component
+(sm/defn toolbar :- t/Component
   "Renders a button toolbar."
   [opts & children]
   (let [[bs props] (t/separate {} opts {:bs-class "button-toolbar"})]
@@ -79,14 +74,9 @@
            :class (u/class-set (t/bs-class-set bs))}
      children]))
 
-(rum/defc toolbar
-  < rum/static
-  [& args]
-  (apply toolbar* args))
-
 ;; ## Button Group
 
-(sm/defn button-group* :- t/Component
+(sm/defn button-group :- t/Component
   "Renders the supplied children in a wrapping button-group div."
   [opts :- ButtonGroup & children]
   (let [[bs props] (t/separate ButtonGroup opts {:bs-class "button-group"})
@@ -96,11 +86,6 @@
                         :btn-group-justified (:justified? bs)})]
     [:div (u/merge-props props {:class (u/class-set classes)})
      children]))
-
-(rum/defc button-group
-  < rum/static
-  [& args]
-  (apply button-group* args))
 
 ;; ## Dropdown Button
 
