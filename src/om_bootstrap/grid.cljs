@@ -2,7 +2,6 @@
   "Grid, Row, Col."
   (:require [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
-            [om-tools.dom :as d :include-macros true]
             [schema.core :as s])
   (:require-macros [schema.macros :as sm]))
 
@@ -33,14 +32,14 @@
         class (if (:fluid? bs)
                 "container-fluid"
                 "container")]
-    (d/div (u/merge-props props {:class class})
-           children)))
+    [:div (u/merge-props props {:class class})
+           children]))
 
 (sm/defn row :- t/Component
   "Generates a Bootstrap row element."
   [opts & children]
-  (d/div (u/merge-props opts {:class "row"})
-         children))
+  [:div (u/merge-props opts {:class "row"})
+         children])
 
 (sm/defn col :- t/Component
   "Generates a Bootstrap column element."
@@ -51,5 +50,5 @@
                        (select-keys bs col-keys))
                   (zipmap (repeat true))
                   (u/class-set))]
-    (d/div (u/merge-props props {:class class})
-           children)))
+    [:div (u/merge-props props {:class class})
+           children]))
