@@ -79,14 +79,14 @@
 (sm/defn render-input-group
   "Items is a vector of render instances."
   [{:keys [addon-before addon-after]} :- Addons
-   items :- s/Any]
+   & items :- [s/Any]]
   (if (or addon-before addon-after)
     [:div {:class "input-group"}
-           (when addon-before
-             [:span {:class "input-group-addon"} addon-before])
-           items
-           (when addon-after
-             [:span {:class "input-group-addon"} addon-after])]
+     (when addon-before
+       [:span {:class "input-group-addon"} addon-before])
+     items
+     (when addon-after
+       [:span {:class "input-group-addon"} addon-after])]
     items))
 
 (sm/defn checkbox-or-radio? :- s/Bool
@@ -99,36 +99,36 @@
 (sm/defn checkbox-or-radio-wrapper :- t/Component
   "Wraps this business in a div."
   [{type :type} :- Input
-   children]
+   & children]
   (let [klasses {:checkbox (= "checkbox" type)
                  :radio (= "radio" type)}]
     [:div {:class (u/class-set klasses)}
-           children]))
+     children]))
 
 (sm/defn render-label
   "This doesn't handle any control group stuff."
   ([input :- Input] (render-label input nil))
   ([{lc :label-classname label :label :as input} :- Input
     child]
-     (let [classes (merge {:control-label (not (checkbox-or-radio? input))}
-                          (when lc {lc (boolean lc)}))]
-       (if label
-         [:label {:class (u/class-set classes)}
-                  child
-                  label]
-         child))))
+   (let [classes (merge {:control-label (not (checkbox-or-radio? input))}
+                        (when lc {lc (boolean lc)}))]
+     (if label
+       [:label {:class (u/class-set classes)}
+        child
+        label]
+       child))))
 
 (sm/defn render-wrapper
   [{wc :wrapper-classname} :- Input
-   child]
+   & children]
   (if wc
-    [:div {:class wc} child]
-    child))
+    [:div {:class wc} children]
+    children))
 
 (sm/defn render-form-group :- t/Component
   "Wraps the entire form group."
   [{bs-style :bs-style cn :group-classname :as input} :- Input
-   children]
+   & children]
   (let [classes (merge {:form-group (not (:skip-form-group? input))
                         :has-feedback (boolean (:feedback? input))
                         :has-success (= "success" bs-style)
@@ -136,10 +136,10 @@
                         :has-error (= "error" bs-style)}
                        (when cn {cn (boolean cn)}))]
     [:div {:class (u/class-set classes)}
-           children]))
+     children]))
 
 (sm/defn render-input :- t/Component
-  [input :- Input attrs children]
+  [input :- Input attrs & children]
   (let [props (fn [klass]
                 (u/merge-props attrs {:class klass
                                       :ref "input"
@@ -151,10 +151,10 @@
         "textarea" [:textarea (props "form-control")]
         "static" [:p (props "form-control-static") (:value attrs)]
         [:input (assoc (props (if (checkbox-or-radio? input)
-                                 ""
-                                 "form-control"))
-                   :type (:type input))
-                 children]))))
+                                ""
+                                "form-control"))
+                       :type (:type input))
+         children]))))
 
 ;; ### API Methods
 
@@ -165,20 +165,20 @@
   [opts :- Input & children]
   (let [[input attrs] (t/separate Input opts)]
     (if (checkbox-or-radio? input)
-      (->> [(->> (render-input input attrs children)
+      (->> [(->> (apply render-input input attrs children)
                  (render-label input)
                  (checkbox-or-radio-wrapper input))
             (render-help (:help input))]
-           (render-wrapper input)
-           (render-form-group input))
+           (apply render-wrapper input)
+           (apply render-form-group input))
       (->> [(render-label input)
             (->> [(render-input-group
                    (select-keys input [:addon-before :addon-after])
-                   (render-input input attrs children))
+                   (apply render-input input attrs children))
                   (render-icon (select-keys input [:feedback? :bs-style]))
                   (render-help (:help input))]
-                 (render-wrapper input))]
-           (render-form-group input)))))
+                 (apply render-wrapper input))]
+           (apply render-form-group input)))))
 
 ;; ### Input Candidates
 ;;

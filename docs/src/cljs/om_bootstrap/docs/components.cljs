@@ -709,6 +709,5 @@
       (well-block)
       (glyphicon-block)
       (table-block)
-      ;; (input-block)
-      )
+      (input-block))
      (sidebar)))])
