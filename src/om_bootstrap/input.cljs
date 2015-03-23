@@ -1,6 +1,5 @@
 (ns om-bootstrap.input
   (:require [clojure.string :as string]
-            [om.core :as om]
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
             [schema.core :as s])

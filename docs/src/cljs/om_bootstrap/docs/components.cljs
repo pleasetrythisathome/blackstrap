@@ -1,7 +1,6 @@
 (ns om-bootstrap.docs.components
   "All components for the om-bootstrap documentation project."
-  (:require [om.core :as om :include-macros true]
-            [om-bootstrap.docs.example :refer [example TODO]]
+  (:require [om-bootstrap.docs.example :refer [example TODO]]
             [om-bootstrap.docs.shared :refer [page-header]]
             [om-bootstrap.button :as b]
             [om-bootstrap.grid :as g]
@@ -688,28 +687,28 @@
      {:class "row"}
      (d/div
       {:class "col-md-9" :role "main"}
-      (lead)
-      (button-block)
-      (panel-block)
-      (modal-block)
-      (tooltip-block)
-      (popover-block)
-      (progress-bar-block)
-      (nav-block)
-      ;; (navbar-block)
-      (tab-block)
-      (pagination-block)
-      (pager-block)
-      (alert-block)
-      (carousel-block)
-      (grid-block)
-      (label-block)
-      (badge-block)
-      (jumbotron-block)
-      (header-block)
-      (well-block)
-      (glyphicon-block)
-      (table-block)
-      ;; (input-block)
+      ;; (lead)
+      ;; (button-block)
+      ;; (panel-block)
+      ;; (modal-block)
+      ;; (tooltip-block)
+      ;; (popover-block)
+      ;; (progress-bar-block)
+      ;; (nav-block)
+      ;; ;; (navbar-block)
+      ;; (tab-block)
+      ;; (pagination-block)
+      ;; (pager-block)
+      ;; (alert-block)
+      ;; (carousel-block)
+      ;; (grid-block)
+      ;; (label-block)
+      ;; (badge-block)
+      ;; (jumbotron-block)
+      ;; (header-block)
+      ;; (well-block)
+      ;; (glyphicon-block)
+      ;; (table-block)
+      (input-block)
       )
      (sidebar)))])

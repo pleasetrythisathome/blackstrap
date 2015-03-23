@@ -1,7 +1,6 @@
 (ns om-bootstrap.modal
   "IN PROGRESS work on a modal component. Depends on a fade mixin."
-  (:require [om.core :as om]
-            [om-bootstrap.mixins :as m]
+  (:require [om-bootstrap.mixins :as m]
             [om-bootstrap.types :as t]
             [schema.core :as s]
             [om-bootstrap.util :as u]

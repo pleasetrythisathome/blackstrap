@@ -8,9 +8,6 @@
   [state]
   (let [loading? @(:loading? state)
         toggle #(swap! (:loading? state) not)
-
-        ;; This is required to get around
-        ;; https://github.com/Prismatic/om-tools/issues/29.
         handle-click (fn [e]
                        (toggle)
                        (m/set-timeout state toggle 2000))]

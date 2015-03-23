@@ -1,7 +1,6 @@
 (ns om-bootstrap.button
   "Bootstrap buttons!"
-  (:require [om.core :as om]
-            [om-bootstrap.mixins :as m]
+  (:require [om-bootstrap.mixins :as m]
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
             [schema.core :as s]

@@ -1,6 +1,5 @@
 #_
-(:require [om-bootstrap.random :as r]
-          [om-tools.dom :as d :include-macros true])
+(:require [om-bootstrap.random :as r])
 
 [:div {:style {:height 50}}
  (r/tooltip {:placement "right"

@@ -1,6 +1,5 @@
 (ns om-bootstrap.table
-  (:require [om.core :as om]
-            [om-bootstrap.types :as t]
+  (:require [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
             [schema.core :as s])
   (:require-macros [schema.macros :as sm]))

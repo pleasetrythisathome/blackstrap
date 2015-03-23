@@ -2,7 +2,6 @@
   "Utilities for the om-bootstrap library."
   (:require [clojure.string :as str]
             [goog.object :as gobject]
-            [om.core :as om]
             [schema.core :as s])
   (:require-macros [schema.macros :as sm]))
 
