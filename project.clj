@@ -5,26 +5,26 @@
   '[[javax.servlet/servlet-api "2.5"]
     [compojure "1.1.8"]
     [http-kit "2.1.18"]
-    [hiccup "1.0.5"]])
+    [hiccup "1.0.5"]
+    [org.omcljs/om "0.8.8"]
+    [prismatic/om-tools "0.3.10"]])
 
 (defproject pleasetrythisathome/blackstrap "0.4.3-SNAPSHOT"
-  :description "Bootstrap meets Om."
-  :url "http://github.com/racehub/om-bootstrap"
+  :description "Bootstrap meets Rum."
+  :url "http://github.com/pleasetrythisathome/blackstrap"
   :license {:name "MIT License"
             :url "http://www.opensource.org/licenses/mit-license.php"
             :distribution :repo}
   :scm {:name "git"
-        :url "https://github.com/racehub/om-bootstrap"}
+        :url "http://github.com/pleasetrythisathome/blackstrap"}
   :min-lein-version "2.3.0"
-  :uberjar-name "om-bootstrap.jar"
+  :uberjar-name "blackstrap.jar"
   :jar-exclusions [#".DS_Store"]
   :dependencies [[org.clojure/clojure "1.7.0-alpha2"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [prismatic/om-tools "0.3.10" :exclusions [om]]
                  [prismatic/schema "0.3.1"
                   :exclusions [org.clojure/clojurescript]]
-                 [org.omcljs/om "0.8.8" :scope "provided"]
-                 [rum "0.2.6" :scope "provided" :excluse [cljsjs/react]]]
+                 [rum "0.2.6" :scope "provided"]]
   :profiles {:provided
              {:dependencies [[org.clojure/clojurescript "0.0-3126"]
                              [secretary "1.2.0"]

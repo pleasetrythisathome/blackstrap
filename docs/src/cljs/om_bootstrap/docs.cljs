@@ -1,52 +1,55 @@
 (ns om-bootstrap.docs
   (:require [cljs.core.async :as a :refer [chan put!]]
             [goog.events :as ev]
+            [om.core :as om :include-macros true]
             [om-bootstrap.docs.footer :refer [footer]]
             [om-bootstrap.docs.nav :as n]
             [om-bootstrap.docs.components :refer [components-page]]
             [om-bootstrap.docs.getting-started :refer [getting-started-page]]
             [om-bootstrap.docs.home :refer [home-page]]
             [om-bootstrap.docs.shared :refer [four-oh-four]]
+            [om-tools.core :refer-macros [defcomponentk]]
+            [om-tools.dom :as d :include-macros true]
             [secretary.core :as route :refer-macros [defroute]]
-            [weasel.repl :as ws-repl]
-            [rum])
+            [weasel.repl :as ws-repl])
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:import [goog.history EventType]))
 
 (defn shell [active-page guts]
-  [:div {}
+  (d/div {}
          (n/nav-main active-page)
          guts
-         (footer)])
+         (footer)))
 
-(rum/defc app
+(defcomponentk app
   "This is the top level component that renders the entire example
   docs page."
-  [active-page]
-  (shell active-page
-         (case active-page
-           "not-found" (four-oh-four)
-           "root" (home-page)
-           "getting-started" (getting-started-page)
-           "components" (components-page))))
+  [[:data active-page]]
+  (render [_]
+          (shell active-page
+                 (case active-page
+                   "not-found" (four-oh-four)
+                   "root" (home-page)
+                   "getting-started" (getting-started-page)
+                   "components" (components-page)))))
 
-(defn load-rum [component state]
-  (rum/mount (component state)
-             (. js/document (getElementById "app"))))
+(defn load-om [component state]
+  (om/root component state
+           {:target (. js/document (getElementById "app"))}))
 
 ;; ## Client Side Routing and Navigation
 
 (defroute "/" []
-  (load-rum app {:active-page "root"}))
+  (load-om app {:active-page "root"}))
 
 (defroute "/getting-started" []
-  (load-rum app {:active-page "getting-started"}))
+  (load-om app {:active-page "getting-started"}))
 
 (defroute "/components" []
-  (load-rum app {:active-page "components"}))
+  (load-om app {:active-page "components"}))
 
 (defroute "*" []
-  (load-rum app {:active-page "not-found"}))
+  (load-om app {:active-page "not-found"}))
 
 (defn listen
   "Registers a listener of type `type` on the supplied
