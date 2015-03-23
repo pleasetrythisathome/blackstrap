@@ -4,8 +4,6 @@
             [om-bootstrap.mixins :as m]
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
-            [om-tools.core :refer-macros [defcomponentk]]
-            [om-tools.dom :as d :include-macros true]
             [rum]
             [schema.core :as s])
   (:require-macros [schema.macros :as sm]
@@ -17,8 +15,8 @@
   "A lightweight, flexible component that can optionally extend the
    entire viewport to showcase key content on your site."
   [opts & children]
-  (d/div (u/merge-props opts {:class "jumbotron"})
-         children))
+  [:div (u/merge-props opts {:class "jumbotron"})
+   children])
 
 ;; ## Label
 
@@ -28,8 +26,8 @@
   (let [[bs props] (t/separate {} opts {:bs-class "label"
                                         :bs-style "default"})
         classes (t/bs-class-set bs)]
-    (d/span (u/merge-props props {:class (u/class-set classes)})
-            children)))
+    [:span (u/merge-props props {:class (u/class-set classes)})
+     children]))
 
 ;; ## Well
 
@@ -38,8 +36,8 @@
   [opts & children]
   (let [[bs props] (t/separate {} opts {:bs-class "well"})
         class (u/class-set (t/bs-class-set bs))]
-    (d/div (u/merge-props props {:class class})
-           children)))
+    [:div (u/merge-props props {:class class})
+     children]))
 
 ;; ## Header
 
@@ -48,8 +46,8 @@
   sections of content on a page. It can utilize the h1’s default small
   element, as well as most other components (with additional styles)."
   [opts & children]
-  (d/div (u/merge-props opts {:class "page-header"})
-         (d/h1 children)))
+  [:div (u/merge-props opts {:class "page-header"})
+   [:h1 children]])
 
 ;; ## Tooltip
 
@@ -71,14 +69,14 @@
                  (:placement bs) true
                  :in (or (:position-left bs)
                          (:position-top bs))}]
-    (d/div {:class (u/class-set classes)
-            :style {:left (:position-left bs)
-                    :top (:position-top bs)}}
-           (d/div {:class "tooltip-arrow"
-                   :style {:left (:arrow-offset-left bs)
-                           :top (:arrow-offset-top bs)}})
-           (d/div {:class "tooltip-inner"}
-                  children))))
+    [:div {:class (u/class-set classes)
+           :style {:left (:position-left bs)
+                   :top (:position-top bs)}}
+     [:div {:class "tooltip-arrow"
+            :style {:left (:arrow-offset-left bs)
+                    :top (:arrow-offset-top bs)}}]
+     [:div {:class "tooltip-inner"}
+      children]]))
 
 ;; ## Alert
 
@@ -105,14 +103,14 @@
   [{:keys [bs props children]}]
   (let [classes (t/bs-class-set bs)
         dismiss-button (when-let [od (:on-dismiss bs)]
-                         (d/button {:type "button"
-                                    :class "close"
-                                    :on-click od
-                                    :aria-hidden true}
-                                   "&times;"))]
+                         (:button {:type "button"
+                                   :class "close"
+                                   :on-click od
+                                   :aria-hidden true}
+                                  "&times;"))]
     [:div (u/merge-props props {:class (u/class-set classes)})
-           dismiss-button
-           children]))
+     dismiss-button
+     children]))
 
 (sm/defn alert :- t/Component
   "Wrapper for the alert component to allow a better user interface."
@@ -142,17 +140,17 @@
                  (:placement bs) true
                  :in (or (:position-left bs)
                          (:position-top bs))}]
-    (d/div {:class (u/class-set classes)
-            :style {:left (:position-left bs)
-                    :top (:position-top bs)
-                    :display "block"}}
-           (d/div {:class "arrow"
-                   :style {:left (:arrow-offset-left bs)
-                           :top (:arrow-offset-top bs)}})
-           (when-let [title (:title bs)]
-             (d/h3 {:class "popover-title"} title))
-           (d/div {:class "popover-content"}
-                  children))))
+    [:div {:class (u/class-set classes)
+           :style {:left (:position-left bs)
+                   :top (:position-top bs)
+                   :display "block"}}
+     [:div {:class "arrow"
+            :style {:left (:arrow-offset-left bs)
+                    :top (:arrow-offset-top bs)}}]
+     (when-let [title (:title bs)]
+       [:h3 {:class "popover-title"} title])
+     [:div {:class "popover-content"}
+      children]]))
 
 ;; ## Badge
 
@@ -165,8 +163,8 @@
   (let [[bs props] (t/separate Badge opts)
         classes {:pull-right (:pull-right? bs)
                  :badge (u/some-valid-component? children)}]
-    (d/span (u/merge-props props {:class (u/class-set classes)})
-            children)))
+    [:span (u/merge-props props {:class (u/class-set classes)})
+     children]))
 
 ;; ## Glyphicon
 
@@ -177,6 +175,6 @@
   [opts :- Glyphicon & children]
   (let [[bs props] (t/separate Glyphicon opts {:bs-class "glyphicon"})
         classes (assoc (t/bs-class-set bs)
-                  (str "glyphicon-" (:glyph bs)) true)]
-    (d/span (u/merge-props props {:class (u/class-set classes)})
-            children)))
+                       (str "glyphicon-" (:glyph bs)) true)]
+    [:span (u/merge-props props {:class (u/class-set classes)})
+     children]))

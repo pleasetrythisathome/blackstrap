@@ -96,34 +96,33 @@
         ".")
    (example (slurp-example "button/group_sizes"))
 
-   ;; (d/h3 "Nesting")
-   ;; (d/p "You can place other button types within the "
-   ;;      (d/code "b/button-group") ", like "
-   ;;      (d/code "b/dropdown") "s.")
-   ;; (example (slurp-example "button/group_nested"))
+   (d/h3 "Nesting")
+   (d/p "You can place other button types within the "
+        (d/code "b/button-group") ", like "
+        (d/code "b/dropdown") "s.")
+   (example (slurp-example "button/group_nested"))
 
-   ;; (d/h3 "Vertical variation")
-   ;; (d/p "Make a set of buttons appear vertically stacked rather than
-   ;; horizontally. " (d/strong {:class "text-danger"} "Split button
-   ;; dropdowns are not supported here."))
-   ;; (d/p "Just add " (d/code ":vertical? true") "  to the " (d/code "b/button-group"))
-   ;; (example (slurp-example "button/group_vertical"))
+   (d/h3 "Vertical variation")
+   (d/p "Make a set of buttons appear vertically stacked rather than
+   horizontally. " (d/strong {:class "text-danger"} "Split button
+   dropdowns are not supported here."))
+   (d/p "Just add " (d/code ":vertical? true") "  to the " (d/code "b/button-group"))
+   (example (slurp-example "button/group_vertical"))
 
-   ;; (d/h3 "Justified button groups")
-   ;; (d/p "Make a group of buttons stretch at equal sizes to span the
-   ;; entire width of its parent. Also works with button dropdowns within
-   ;; the button group.")
-   ;; (warning
-   ;;  "Style issues"
-   ;;  (d/p "There are some issues and workarounds required when using
-   ;;   this property, please see "
-   ;;       (d/a {:href "http://getbootstrap.com/components/#btn-groups-justified"}
-   ;;            "bootstrap's button group docs")
-   ;;       " for more specifics."))
-   ;; (d/p "Just add " (d/code ":justified? true") " to
-   ;; the " (d/code "b/button-group") ".")
-   ;; (example (slurp-example "button/group_justified"))
-   ))
+   (d/h3 "Justified button groups")
+   (d/p "Make a group of buttons stretch at equal sizes to span the
+   entire width of its parent. Also works with button dropdowns within
+   the button group.")
+   (warning
+    "Style issues"
+    (d/p "There are some issues and workarounds required when using
+     this property, please see "
+         (d/a {:href "http://getbootstrap.com/components/#btn-groups-justified"}
+              "bootstrap's button group docs")
+         " for more specifics."))
+   (d/p "Just add " (d/code ":justified? true") " to
+   the " (d/code "b/button-group") ".")
+   (example (slurp-example "button/group_justified"))))
 
 (defn button-dropdowns []
   (section
@@ -182,8 +181,7 @@
 (defn button-block []
   [(button-main)
    (button-groups)
-   ;;(button-dropdowns)
-   ])
+   (button-dropdowns)])
 
 ;; ## Panel
 
@@ -695,10 +693,10 @@
      (d/div
       {:class "col-md-9" :role "main"}
       (lead)
-      (button-block)
+      ;; (button-block)
       ;; (panel-block)
       ;; (modal-block)
-      ;; (tooltip-block)
+      (tooltip-block)
       ;; (popover-block)
       ;; (progress-bar-block)
       ;; (nav-block)
@@ -706,7 +704,7 @@
       ;; (tab-block)
       ;; (pagination-block)
       ;; (pager-block)
-      (alert-block)
+      ;; (alert-block)
       ;; (carousel-block)
       ;; (grid-block)
       ;; (label-block)
