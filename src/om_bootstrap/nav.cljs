@@ -1,11 +1,10 @@
 (ns om-bootstrap.nav
   (:require [clojure.string :as st]
-            [om.core :as om]
+            [om-bootstrap.mixins :as m]
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
-            [om-tools.core :refer-macros [defcomponentk]]
-            [om-tools.dom :as d :include-macros true]
-            [schema.core :as s])
+            [schema.core :as s]
+            [rum])
   (:require-macros [schema.macros :as sm]))
 
 ;; ## NavItem
@@ -18,32 +17,29 @@
     (s/optional-key :disabled?) s/Bool
     (s/optional-key :href) s/Str}))
 
-(defcomponentk nav-item*
+(rum/defc nav-item*
   "Generates a nav item for use inside of a nav element."
-  [owner]
-  (render
-   [_]
-   (let [{:keys [opts children]} (om/get-props owner)
-         [bs props] (t/separate NavItem opts {:href "#"})
-         classes {:active (:active? bs)
-                  :disabled (:disabled? bs)}
-         handle-click (fn [e]
-                        (when-let [f (:on-select bs)]
-                          (.preventDefault e)
-                          (when-not (:disabled? bs)
-                            (f (:key props)
-                               (:href bs)))))]
-     (d/li (u/merge-props props {:class (u/class-set classes)})
-           (d/a {:href (:href bs)
-                 :ref "anchor"
-                 :title (:title bs)
-                 :on-click handle-click}
-                children)))))
+  [{:keys [opts children]}]
+  (let [[bs props] (t/separate NavItem opts {:href "#"})
+        classes {:active (:active? bs)
+                 :disabled (:disabled? bs)}
+        handle-click (fn [e]
+                       (when-let [f (:on-select bs)]
+                         (.preventDefault e)
+                         (when-not (:disabled? bs)
+                           (f (:key props)
+                              (:href bs)))))]
+    [:li (u/merge-props props {:class (u/class-set classes)})
+     [:a {:href (:href bs)
+          :ref "anchor"
+          :title (:title bs)
+          :on-click handle-click}
+      children]]))
 
 (sm/defn nav-item :- t/Component
   [opts :- NavItem & children]
-  (->nav-item* {:opts opts
-                :children children}))
+  (nav-item* {:opts opts
+              :children children}))
 
 ;; ## Nav
 
@@ -84,33 +80,31 @@
     (fn [child]
       (u/clone-with-props child prop-fn))))
 
-(defcomponentk nav* [owner]
-  (render
-   [_]
-   (let [{:keys [opts children]} (om/get-props owner)
-         [bs props] (t/separate Nav opts {:expanded? true
-                                          :bs-class "nav"})
-         classes {:navbar-collapse (:collapsible? bs)
-                  :collapse (not (:expanded? bs))
-                  :in (:expanded? bs)}
-         ul-props {:ref "ul"
-                   :class (u/class-set
-                           (merge (t/bs-class-set bs)
-                                  {:nav-stacked (:stacked? bs)
-                                   :nav-justified (:justified? bs)
-                                   :navbar-nav (:navbar? bs)
-                                   :pull-right (:pull-right? bs)}))}
-         children (map (clone-nav-item opts) children)]
-     (if (and (:navbar? bs)
-              (not (:collapsible? bs)))
-       (d/ul (u/merge-props props ul-props) children)
-       (d/nav (u/merge-props props {:class (u/class-set classes)})
-              (d/ul ul-props children))))))
+(rum/defc nav*
+  [{:keys [opts children]}]
+  (let [[bs props] (t/separate Nav opts {:expanded? true
+                                         :bs-class "nav"})
+        classes {:navbar-collapse (:collapsible? bs)
+                 :collapse (not (:expanded? bs))
+                 :in (:expanded? bs)}
+        ul-props {:ref "ul"
+                  :class (u/class-set
+                          (merge (t/bs-class-set bs)
+                                 {:nav-stacked (:stacked? bs)
+                                  :nav-justified (:justified? bs)
+                                  :navbar-nav (:navbar? bs)
+                                  :pull-right (:pull-right? bs)}))}
+        children (map (clone-nav-item opts) children)]
+    (if (and (:navbar? bs)
+             (not (:collapsible? bs)))
+      [:ul (u/merge-props props ul-props) children]
+      [:nav (u/merge-props props {:class (u/class-set classes)})
+       [:ul ul-props children]])))
 
 (sm/defn nav :- t/Component
   [opts :- Nav & children]
-  (->nav* {:opts opts
-           :children children}))
+  (nav* {:opts opts
+         :children children}))
 
 ;; ## SubNav
 
@@ -131,42 +125,42 @@
     (s/optional-key :nav-expanded?) s/Bool
     (s/optional-key :default-nav-expanded?) s/Bool}))
 
-(defn render-toggle-button [owner bs]
+(defn render-toggle-button [state bs]
   (let [handle-toggle (fn []
                         (when-let [f (:on-toggle bs)]
-                          (om/set-state-nr! owner [:changing?] true)
+                          (reset! (:changing? state) true)
                           (f)
-                          (om/set-state-nr! owner [:changing?] false))
-                        (om/update-state! owner [:nav-open?] not))
+                          (reset! (:changing? state) false))
+                        (swap! (:nav-open? state) not))
         tb (u/clone-with-props (:toggle-button bs)
                                {:class "navbar-toggle"
                                 :on-click handle-toggle})]
-    (d/button {:class "navbar-toggle"
-               :type "button"
-               :on-click handle-toggle}
-              (or tb [(d/span {:class "sr-only" :key 0} "Toggle navigation")
-                      (d/span {:class "icon-bar" :key 1})
-                      (d/span {:class "icon-bar" :key 2})
-                      (d/span {:class "icon-bar" :key 3})]))))
+    [:button {:class "navbar-toggle"
+              :type "button"
+              :on-click handle-toggle}
+     (or tb [[:span {:class "sr-only" :key 0} "Toggle navigation"]
+             [:span {:class "icon-bar" :key 1}]
+             [:span {:class "icon-bar" :key 2}]
+             [:span {:class "icon-bar" :key 3}]])]))
 
 (sm/defn render-header-and-toggle-btn? :- s/Bool
   "Returns true if any of the necessary properties are in place to
   render the navbar-header and toggle button."
   [bs]
   (boolean
-    (or (:brand bs)
-        (:toggle-button bs)
-        (:toggle-nav-key bs))))
+   (or (:brand bs)
+       (:toggle-button bs)
+       (:toggle-nav-key bs))))
 
-(defn render-header [owner bs]
-  (d/div {:class "navbar-header"}
-         (if (u/strict-valid-component? (:brand bs))
-           (u/clone-with-props (:brand bs) {:class "navbar-brand"})
-           (d/span {:class "navbar-brand"} (:brand bs)))
-         (when (render-header-and-toggle-btn? bs)
-           (render-toggle-button owner bs))))
+(defn render-header [state bs]
+  [:div {:class "navbar-header"}
+   (if (u/strict-valid-component? (:brand bs))
+     (u/clone-with-props (:brand bs) {:class "navbar-brand"})
+     [:span {:class "navbar-brand"} (:brand bs)])
+   (when (render-header-and-toggle-btn? bs)
+     (render-toggle-button state bs))])
 
-(defn render-navbar-child [owner child bs]
+(defn render-navbar-child [state child bs]
   (let [f (fn [props]
             (let [opts (:opts props)
                   collapsible? (or (:collapsible? opts)
@@ -176,37 +170,38 @@
                         :collapsible? collapsible?
                         :expanded? (and collapsible?
                                         (or (:nav-expanded? bs)
-                                            (om/get-state owner :nav-open?)))}]
+                                            @(:nav-open? state)))}]
               (update-in props [:opts] u/merge-props base)))]
     (u/clone-with-props child f)))
 
-(defcomponentk navbar*
-  [[:data opts children] owner]
-  (init-state [_] {:nav-open? (:default-nav-expanded? opts)
-                   :changing? false})
-  (should-update [_ _ next-state]
-                 (not (:changing? next-state)))
-  (render
-   [_]
-   (let [[bs props] (t/separate NavBar opts
-                                {:bs-class "navbar"
-                                 :bs-style "default"
-                                 :role "navigation"
-                                 :component-fn (fn [opts & c]
-                                                 (d/nav opts c))})
-         classes (assoc (t/bs-class-set bs)
-                   :navbar-fixed-top (:fixed-top? bs)
-                   :navbar-fixed-bottom (:fixed-bottom? bs)
-                   :navbar-static-top (:static-top? bs)
-                   :navbar-inverse (:inverse? bs))]
-     ((:component-fn bs) (u/merge-props (merge bs props)
-                                        {:class (u/class-set classes)})
-      (d/div {:class (if (:fluid props) "container-fluid" "container")}
-             (when (render-header-and-toggle-btn? bs)
-               (render-header owner bs))
-             (map #(render-navbar-child owner % bs) children))))))
+(rum/defcs navbar*
+  < (rum/local false :changing?)
+  {:should-update
+   (fn [old-state new-state]
+     (not @(:changing? new-state)))}
+  (rum/local false :nav-open?)
+  (m/default-local (comp #(get-in % [:opts :default-nav-expanded?]) first :rum/args) :nav-open?)
+  [state {:keys [opts children]}]
+  (let [children nil ;; this is wrong, causes a hang currently
+        [bs props] (t/separate NavBar opts
+                               {:bs-class "navbar"
+                                :bs-style "default"
+                                :role "navigation"
+                                :component-fn (fn [opts & c]
+                                                [:nav opts c])})
+        classes (assoc (t/bs-class-set bs)
+                       :navbar-fixed-top (:fixed-top? bs)
+                       :navbar-fixed-bottom (:fixed-bottom? bs)
+                       :navbar-static-top (:static-top? bs)
+                       :navbar-inverse (:inverse? bs))]
+    ((:component-fn bs) (u/merge-props (merge bs props)
+                                       {:class (u/class-set classes)})
+     [:div {:class (if (:fluid props) "container-fluid" "container")}
+      (when (render-header-and-toggle-btn? bs)
+        (render-header state bs))
+      (map #(render-navbar-child state % bs) children)])))
 
 (sm/defn navbar
   [opts :- NavBar & children]
-  (->navbar* {:opts opts
-              :children children}))
+  (navbar* {:opts opts
+            :children children}))
