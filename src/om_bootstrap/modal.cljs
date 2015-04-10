@@ -2,10 +2,9 @@
   "IN PROGRESS work on a modal component. Depends on a fade mixin."
   (:require [om-bootstrap.mixins :as m]
             [om-bootstrap.types :as t]
-            [schema.core :as s]
+            [schema.core :as s :include-macros true]
             [om-bootstrap.util :as u]
-            [rum])
-  (:require-macros [schema.macros :as sm]))
+            [rum]))
 
 ;; ## Schema
 
@@ -48,6 +47,6 @@
        [:div {:class "modal-footer"}
         (:footer bs)]]]]))
 
-(sm/defn modal
+(s/defn modal
   [opts :- Modal & children]
   (modal* {:opts opts :children children}))

@@ -2,16 +2,15 @@
   (:require [om-bootstrap.mixins :as m]
             [om-bootstrap.types :as t]
             [om-bootstrap.util :as u]
-            [schema.core :as s]
-            [rum])
-  (:require-macros [schema.macros :as sm]))
+            [schema.core :as s :include-macros true]
+            [rum]))
 
 ;; TODO: Dropdown functionality is NOT there yet, so :on-select is
 ;; ignored (https://github.com/racehub/om-bootstrap/issues/17)
 
 (def Panel
   (t/bootstrap
-   {(s/optional-key :on-select) (sm/=> s/Any s/Any)
+   {(s/optional-key :on-select) (s/=> s/Any s/Any)
     (s/optional-key :header) t/Renderable
     (s/optional-key :footer) t/Renderable
     (s/optional-key :list-group) t/Renderable
@@ -20,7 +19,7 @@
 
 (declare collapsible-panel*)
 
-(sm/defn panel :- t/Component
+(s/defn panel :- t/Component
   [opts :- Panel & children]
   (let [[bs props] (t/separate Panel opts {:bs-class "panel"
                                            :bs-style "default"})

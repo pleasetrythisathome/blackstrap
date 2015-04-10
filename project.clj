@@ -7,7 +7,7 @@
     [http-kit "2.1.18"]
     [hiccup "1.0.5"]
     [org.omcljs/om "0.8.8"]
-    [prismatic/om-tools "0.3.10"]])
+    [prismatic/om-tools "0.3.11"]])
 
 (defproject pleasetrythisathome/blackstrap "0.4.3-SNAPSHOT"
   :description "Bootstrap meets Rum."
@@ -20,15 +20,15 @@
   :min-lein-version "2.3.0"
   :uberjar-name "blackstrap.jar"
   :jar-exclusions [#".DS_Store"]
-  :dependencies [[org.clojure/clojure "1.7.0-alpha2"]
+  :dependencies [[org.clojure/clojure "1.7.0-alpha6"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [prismatic/schema "0.3.1"
-                  :exclusions [org.clojure/clojurescript]]
+                 [prismatic/plumbing "0.4.2"]
+                 [prismatic/schema "0.4.0"]
                  [rum "0.2.6" :scope "provided"]]
   :profiles {:provided
              {:dependencies [[org.clojure/clojurescript "0.0-3126"]
                              [secretary "1.2.0"]
-                             [weasel "0.5.0"]]}
+                             [weasel "0.6.0"]]}
              ;; Change to the first version of the uberjar profile
              ;; when this bug gets fixed:
              ;; https://github.com/technomancy/leiningen/issues/1694
@@ -58,7 +58,7 @@
              :dev {:plugins [~cljsbuild
                              [com.cemerick/clojurescript.test "0.3.1"]
                              [paddleguru/lein-gitflow "0.1.2"]]
-                   :dependencies ~(conj server-deps '[com.cemerick/piggieback "0.1.5"])
+                   :dependencies ~(conj server-deps '[com.cemerick/piggieback "0.2.0"])
                    :source-paths ["docs/src/clj" "docs/src-dev"]
                    :resource-paths ["dev"]
                    :main om-bootstrap.server
